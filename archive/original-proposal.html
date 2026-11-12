@@ -1,0 +1,3051 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Caribbean Gas Intelligence — Platform + User Guide v4</title>
+<style>
+  :root {
+    --bg: #f5f7fa; --surface: #ffffff; --surface2: #f8fafc; --surface3: #eef2f7;
+    --accent: #0d9488; --accent-dark: #0f766e; --accent-darker: #134e4a;
+    --accent2: #0284c7; --accent-light: #f0fdfa; --accent2-light: #e0f2fe;
+    --accent3: #ea580c; --warning: #d97706; --warning-light: #fef3c7;
+    --danger: #dc2626; --danger-light: #fee2e2;
+    --purple: #7c3aed; --purple-light: #f5f3ff;
+    --payment: #d97706; --payment-light: #fef3c7;
+    --text: #0f172a; --text2: #475569; --text3: #94a3b8;
+    --border: #e2e8f0; --border2: #cbd5e1;
+    --shadow: 0 1px 3px rgba(15,23,42,0.06), 0 1px 2px rgba(15,23,42,0.04);
+    --shadow-md: 0 4px 12px rgba(15,23,42,0.08);
+    --shadow-lg: 0 10px 30px rgba(15,23,42,0.10);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family:'Inter','Segoe UI',-apple-system,sans-serif;
+    background:var(--bg); color:var(--text); line-height:1.6; font-size:15px;
+    display:flex; min-height:100vh;
+  }
+
+  /* ============ SIDEBAR ============ */
+  .sidebar {
+    width:280px; background:#fff; border-right:1px solid var(--border);
+    position:fixed; top:0; left:0; bottom:0; overflow-y:auto; z-index:100;
+    box-shadow:var(--shadow); transition:transform 0.3s;
+  }
+  .sidebar::-webkit-scrollbar { width:6px; }
+  .sidebar::-webkit-scrollbar-thumb { background:var(--border2); border-radius:3px; }
+
+  .sb-brand {
+    padding:22px 20px 18px; border-bottom:1px solid var(--border);
+    background:linear-gradient(135deg,#f0fdfa 0%,#ecfeff 100%);
+  }
+  .sb-brand h1 { font-size:1.05rem; color:var(--accent-darker); font-weight:800; line-height:1.25; }
+  .sb-brand .sb-sub { font-size:0.7rem; color:var(--text2); margin-top:4px; text-transform:uppercase; letter-spacing:1px; font-weight:700; }
+  .sb-brand .sb-badge {
+    display:inline-block; background:var(--accent); color:#fff;
+    padding:2px 10px; border-radius:10px; font-size:0.6rem; font-weight:800;
+    margin-top:10px; text-transform:uppercase; letter-spacing:0.5px;
+  }
+
+  .sb-nav { padding:12px 10px 40px; }
+  .sb-group-title {
+    font-size:0.62rem; color:var(--text3); text-transform:uppercase;
+    letter-spacing:1.2px; font-weight:800; padding:14px 12px 6px;
+  }
+  .sb-item {
+    display:flex; align-items:center; gap:10px; padding:9px 12px;
+    border-radius:8px; color:var(--text2); cursor:pointer; font-size:0.83rem;
+    font-weight:600; transition:all 0.15s; margin-bottom:2px; user-select:none;
+  }
+  .sb-item:hover { background:var(--surface3); color:var(--accent-dark); }
+  .sb-item.active {
+    background:linear-gradient(135deg,var(--accent-light),#ecfeff);
+    color:var(--accent-darker); border-left:3px solid var(--accent);
+    padding-left:9px; font-weight:700;
+  }
+  .sb-item .sb-ico { font-size:1rem; width:22px; text-align:center; flex-shrink:0; }
+  .sb-item .sb-tag {
+    margin-left:auto; font-size:0.55rem; padding:2px 7px;
+    border-radius:6px; font-weight:800; text-transform:uppercase; letter-spacing:0.5px;
+  }
+  .sb-tag.new { background:var(--danger); color:white; animation:pulse 2s infinite; }
+  .sb-tag.upd { background:var(--accent); color:white; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.6} }
+
+  /* ============ MAIN ============ */
+  .main { margin-left:280px; flex:1; min-height:100vh; display:flex; flex-direction:column; }
+
+  .topbar {
+    background:rgba(255,255,255,0.95); backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--border); padding:12px 28px;
+    display:flex; align-items:center; gap:14px; position:sticky; top:0;
+    z-index:50; flex-wrap:wrap; box-shadow:var(--shadow);
+  }
+  .topbar .tb-title {
+    font-size:0.98rem; font-weight:700; color:var(--text);
+    margin-right:auto; display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+  }
+  .topbar .tb-title .tb-crumb { color:var(--text3); font-weight:500; font-size:0.82rem; }
+  .tb-btn {
+    padding:7px 14px; border:1px solid var(--border2); background:#fff;
+    color:var(--text2); border-radius:7px; font-size:0.78rem; font-weight:700;
+    cursor:pointer; font-family:inherit; transition:all 0.15s;
+    display:inline-flex; align-items:center; gap:6px; white-space:nowrap;
+  }
+  .tb-btn:hover { background:var(--surface3); color:var(--accent-dark); border-color:var(--accent); }
+  .tb-btn.primary { background:linear-gradient(135deg,var(--accent),var(--accent-dark)); color:#fff; border-color:transparent; }
+  .tb-btn.primary:hover { transform:translateY(-1px); box-shadow:0 4px 14px rgba(13,148,136,0.30); }
+
+  .content { padding:28px 32px 80px; max-width:1300px; width:100%; }
+
+  /* ============ VIEWS ============ */
+  .view { display:none; animation:fadeIn 0.3s ease; }
+  .view.active { display:block; }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+
+  .section {
+    background:var(--surface); border-radius:14px; padding:28px 32px;
+    margin-bottom:24px; border:1px solid var(--border); box-shadow:var(--shadow);
+  }
+  .section h2 {
+    font-size:1.35rem; color:var(--accent-darker); margin-bottom:18px;
+    padding-bottom:12px; border-bottom:2px solid var(--accent-light);
+    display:flex; align-items:center; gap:12px; font-weight:800;
+  }
+  .section h2 .ico { font-size:1.5rem; }
+  .section h3 {
+    color:var(--accent-darker); margin:22px 0 10px; font-size:1.1rem;
+    display:flex; align-items:center; gap:8px; font-weight:800;
+  }
+  .section p { color:var(--text2); font-size:0.93rem; margin-bottom:12px; line-height:1.7; }
+  .section p strong { color:var(--text); }
+
+  .page-title { margin-bottom:26px; }
+  .page-title h1 {
+    font-size:2rem; color:var(--text); font-weight:800;
+    letter-spacing:-0.6px; display:flex; align-items:center; gap:14px;
+  }
+  .page-title .pt-sub { color:var(--text2); font-size:1rem; margin-top:6px; }
+  .page-title .pt-tags { display:flex; gap:8px; flex-wrap:wrap; margin-top:14px; }
+  .pt-tag {
+    background:var(--surface3); color:var(--text2); padding:4px 12px;
+    border-radius:12px; font-size:0.72rem; font-weight:700;
+    border:1px solid var(--border); text-transform:uppercase; letter-spacing:0.5px;
+  }
+  .pt-tag.accent { background:var(--accent-light); color:var(--accent-dark); border-color:var(--accent); }
+  .pt-tag.blue { background:var(--accent2-light); color:var(--accent2); border-color:var(--accent2); }
+  .pt-tag.purple { background:var(--purple-light); color:var(--purple); border-color:var(--purple); }
+  .pt-tag.warn { background:var(--warning-light); color:var(--warning); border-color:var(--warning); }
+  .pt-tag.gold { background:var(--payment-light); color:var(--payment); border-color:var(--payment); }
+  .pt-tag.hot { background:linear-gradient(135deg,var(--accent3),var(--danger)); color:white; border-color:transparent; }
+
+  /* ============ GRIDS ============ */
+  .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+  .grid-3 { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
+  .grid-4 { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; }
+  @media(max-width:1100px){ .grid-3,.grid-4{grid-template-columns:repeat(2,1fr)} }
+  @media(max-width:800px){
+    .sidebar{transform:translateX(-100%); width:270px}
+    .sidebar.open{transform:translateX(0)}
+    .main{margin-left:0}
+    .grid-2,.grid-3,.grid-4{grid-template-columns:1fr}
+    .content{padding:20px 16px 60px}
+    .section{padding:20px}
+  }
+
+  /* ============ CARDS ============ */
+  .card {
+    background:var(--surface); border-radius:14px; padding:22px;
+    border:1px solid var(--border); cursor:pointer; transition:all 0.22s;
+    position:relative; overflow:hidden; box-shadow:var(--shadow);
+  }
+  .card::before {
+    content:''; position:absolute; top:0; left:0; width:4px; height:100%;
+    background:var(--accent); transform:scaleY(0); transform-origin:top;
+    transition:transform 0.25s;
+  }
+  .card:hover { border-color:var(--accent); transform:translateY(-3px); box-shadow:var(--shadow-lg); }
+  .card:hover::before { transform:scaleY(1); }
+  .card .c-label {
+    color:var(--text3); font-size:0.7rem; text-transform:uppercase;
+    letter-spacing:1.1px; font-weight:800;
+  }
+  .card .c-value { font-size:1.5rem; font-weight:800; color:var(--accent-darker); margin-top:6px; letter-spacing:-0.5px; }
+  .card .c-sub { color:var(--text2); font-size:0.86rem; margin-top:5px; line-height:1.5; }
+  .card .c-hint {
+    position:absolute; top:12px; right:14px; font-size:0.6rem; color:var(--accent);
+    opacity:0.55; font-weight:800; letter-spacing:0.5px;
+  }
+  .card:hover .c-hint { opacity:1; }
+
+  .card.kpi { border-left:4px solid var(--accent); }
+  .card.kpi::before { display:none; }
+  .card.info { border-left:4px solid var(--accent2); }
+  .card.info .c-value { color:var(--accent2); }
+  .card.warn { border-left:4px solid var(--warning); }
+  .card.warn .c-value { color:var(--warning); }
+  .card.danger { border-left:4px solid var(--danger); }
+  .card.danger .c-value { color:var(--danger); }
+  .card.purple { border-left:4px solid var(--purple); }
+  .card.purple .c-value { color:var(--purple); }
+  .card.customer { border-left:4px solid var(--accent2); }
+  .card.customer .c-value { color:var(--accent2); }
+  .card.tech { border-left:4px solid var(--accent3); }
+  .card.tech .c-value { color:var(--accent3); }
+  .card.ops { border-left:4px solid var(--purple); }
+  .card.ops .c-value { color:var(--purple); }
+  .card.admin { border-left:4px solid #16a34a; }
+  .card.admin .c-value { color:#16a34a; }
+  .card.payment { border-left:4px solid var(--payment); }
+  .card.payment .c-value { color:var(--payment); }
+  .card.success { border-left:4px solid var(--accent); background:linear-gradient(135deg,#ffffff,#f0fdfa); }
+
+  /* ============ DRILL PANELS ============ */
+  .drill-panel {
+    display:none; background:linear-gradient(135deg,#f0fdfa,#f8fafc);
+    border-radius:12px; padding:22px 24px; margin-top:14px;
+    border:1px solid var(--accent); border-left:5px solid var(--accent);
+    animation:slideDown 0.28s ease; width:100%; grid-column:1/-1;
+  }
+  .drill-panel.open { display:block; }
+  @keyframes slideDown { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
+  .drill-panel h4 {
+    color:var(--accent-darker); margin-bottom:12px; font-size:1rem;
+    display:flex; align-items:center; gap:8px; font-weight:800;
+  }
+  .drill-panel p, .drill-panel li { color:var(--text2); font-size:0.9rem; line-height:1.7; }
+  .drill-panel ul { padding-left:20px; margin:8px 0; }
+  .drill-panel li { margin:6px 0; }
+  .drill-panel li strong { color:var(--text); }
+
+  /* ============ TABLES ============ */
+  table {
+    width:100%; border-collapse:collapse; margin:12px 0; font-size:0.87rem;
+    background:var(--surface); border-radius:8px; overflow:hidden;
+  }
+  th {
+    background:var(--surface3); color:var(--accent-darker); padding:11px 14px;
+    text-align:left; font-weight:800; border-bottom:2px solid var(--border2);
+    font-size:0.74rem; text-transform:uppercase; letter-spacing:0.5px;
+  }
+  td { padding:10px 14px; border-bottom:1px solid var(--border); color:var(--text2); }
+  tr:hover td { background:var(--surface2); }
+  tr:last-child td { border-bottom:none; }
+  .total-row td {
+    font-weight:800; color:var(--accent-darker);
+    border-top:2px solid var(--accent); background:var(--accent-light);
+  }
+
+  /* ============ FLOW ============ */
+  .flow {
+    display:flex; align-items:center; justify-content:center;
+    flex-wrap:wrap; gap:8px; padding:18px 0;
+  }
+  .flow-step {
+    background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:12px 16px; text-align:center; font-size:0.78rem; min-width:110px;
+    cursor:pointer; transition:all 0.2s; font-weight:700; color:var(--text);
+    box-shadow:var(--shadow);
+  }
+  .flow-step:hover { border-color:var(--accent); background:var(--accent-light); transform:scale(1.06); }
+  .flow-step .ico { font-size:1.35rem; display:block; margin-bottom:4px; }
+  .flow-arrow { color:var(--accent); font-size:1.15rem; font-weight:bold; }
+
+  /* ============ ALERTS ============ */
+  .alert {
+    border-radius:10px; padding:14px 18px; margin:14px 0;
+    font-size:0.88rem; border-left:4px solid; line-height:1.65;
+  }
+  .alert-danger { background:var(--danger-light); border-color:var(--danger); color:#7f1d1d; }
+  .alert-warning { background:var(--warning-light); border-color:var(--warning); color:#78350f; }
+  .alert-success { background:var(--accent-light); border-color:var(--accent); color:#134e4a; }
+  .alert-info { background:var(--accent2-light); border-color:var(--accent2); color:#075985; }
+  .alert-tip { background:var(--payment-light); border-color:var(--payment); color:#78350f; }
+  .alert strong { color:var(--text); }
+  .alert .a-title {
+    display:block; font-weight:800; margin-bottom:4px;
+    text-transform:uppercase; font-size:0.72rem; letter-spacing:1px;
+  }
+
+  /* ============ TAGS ============ */
+  .tag {
+    display:inline-block; padding:3px 10px; border-radius:10px;
+    font-size:0.66rem; font-weight:800; text-transform:uppercase; letter-spacing:0.5px;
+  }
+  .tag-green { background:var(--accent-light); color:var(--accent-dark); }
+  .tag-blue { background:var(--accent2-light); color:var(--accent2); }
+  .tag-orange { background:var(--warning-light); color:var(--warning); }
+  .tag-red { background:var(--danger-light); color:var(--danger); }
+  .tag-purple { background:var(--purple-light); color:var(--purple); }
+  .tag-gold { background:var(--payment-light); color:var(--payment); }
+
+  /* ============ BARS ============ */
+  .bar-container { margin:8px 0 16px; }
+  .bar-label {
+    display:flex; justify-content:space-between; font-size:0.82rem;
+    color:var(--text2); margin-bottom:5px; font-weight:600;
+  }
+  .bar-track { height:12px; background:var(--surface3); border-radius:6px; overflow:hidden; }
+  .bar-fill {
+    height:100%; border-radius:6px;
+    background:linear-gradient(90deg,var(--accent2),var(--accent));
+    transition:width 1.2s ease;
+  }
+  .bar-fill.warn { background:linear-gradient(90deg,var(--warning),var(--accent3)); }
+  .bar-fill.danger { background:linear-gradient(90deg,var(--danger),var(--warning)); }
+  .bar-fill.gold { background:linear-gradient(90deg,var(--payment),#f59e0b); }
+
+  /* ============ MONO ============ */
+  .mono-block {
+    background:linear-gradient(135deg,#0f172a,#1e293b);
+    border:1px solid #1e293b; border-radius:14px; padding:26px 30px;
+    overflow-x:auto; font-family:'Consolas','Monaco',monospace;
+    font-size:0.82rem; line-height:1.7; color:#5eead4; white-space:pre;
+    margin:14px 0; box-shadow:var(--shadow-lg); width:100%;
+  }
+  .mono-block::-webkit-scrollbar { width:10px; height:10px; }
+  .mono-block::-webkit-scrollbar-thumb { background:#334155; border-radius:5px; }
+
+  /* ============ VIDEO PLAYER (Play Feature) ============ */
+  .video-container {
+    background:linear-gradient(135deg,#0f172a,#1e293b);
+    border-radius:16px; padding:0; overflow:hidden;
+    box-shadow:var(--shadow-lg); margin:20px 0;
+    border:1px solid #1e293b; position:relative;
+  }
+  .video-header {
+    background:linear-gradient(135deg,var(--accent-darker),var(--accent-dark));
+    padding:14px 24px; display:flex; align-items:center;
+    justify-content:space-between; color:white; font-weight:700; font-size:0.95rem;
+  }
+  .video-header .vh-label { display:flex; align-items:center; gap:10px; }
+  .video-header .vh-controls { display:flex; gap:8px; }
+  .video-btn {
+    background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.25);
+    color:white; padding:6px 14px; border-radius:20px; font-size:0.78rem;
+    font-weight:700; cursor:pointer; transition:all 0.2s; font-family:inherit;
+  }
+  .video-btn:hover { background:rgba(255,255,255,0.25); transform:translateY(-1px); }
+  .video-btn.playing { background:var(--accent3); border-color:var(--accent3); }
+  .video-stage {
+    min-height:420px; padding:40px; display:flex;
+    align-items:center; justify-content:center;
+    position:relative; overflow:hidden;
+  }
+  .anim-scene {
+    display:none; width:100%; max-width:1000px;
+    color:#e2e8f0; animation:sceneFade 0.6s ease;
+  }
+  .anim-scene.active { display:block; }
+  @keyframes sceneFade { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+  .anim-title {
+    font-size:1.35rem; font-weight:800; color:#5eead4;
+    margin-bottom:16px; text-align:center; letter-spacing:-0.5px;
+  }
+  .anim-subtitle {
+    font-size:0.9rem; color:#94a3b8; text-align:center; margin-bottom:26px;
+  }
+  .cylinder-anim {
+    display:flex; align-items:center; justify-content:center;
+    gap:60px; flex-wrap:wrap; margin:30px 0;
+  }
+  .cyl {
+    width:140px; height:220px; border-radius:70px 70px 20px 20px;
+    border:4px solid #475569; background:linear-gradient(180deg,#f1f5f9,#cbd5e1);
+    position:relative; overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,0.3);
+  }
+  .cyl-level {
+    position:absolute; bottom:0; left:0; right:0;
+    background:linear-gradient(180deg,#facc15,#eab308);
+    transition:height 0.8s cubic-bezier(0.4,0,0.2,1);
+    border-radius:0 0 16px 16px;
+  }
+  .cyl-valve {
+    position:absolute; top:-20px; left:50%; transform:translateX(-50%);
+    width:30px; height:24px; background:#64748b; border-radius:6px 6px 0 0;
+  }
+  .cyl-label { text-align:center; margin-top:14px; font-size:1rem; font-weight:700; color:#e2e8f0; }
+  .cyl-status { text-align:center; font-size:0.85rem; margin-top:4px; font-weight:600; }
+  .phone-mock {
+    width:240px; height:480px; background:#0f172a;
+    border-radius:32px; border:8px solid #334155; padding:12px;
+    position:relative; box-shadow:0 20px 50px rgba(0,0,0,0.5);
+    flex-shrink:0;
+  }
+  .phone-screen {
+    width:100%; height:100%;
+    background:linear-gradient(180deg,#f0fdfa,#ecfeff);
+    border-radius:22px; padding:16px; overflow:hidden; position:relative;
+  }
+  .phone-notch {
+    position:absolute; top:8px; left:50%; transform:translateX(-50%);
+    width:90px; height:18px; background:#0f172a; border-radius:12px; z-index:5;
+  }
+  .notif {
+    background:white; border-radius:12px; padding:12px 14px;
+    margin-bottom:10px; box-shadow:0 2px 8px rgba(0,0,0,0.08);
+    border-left:4px solid var(--accent); animation:notifSlide 0.5s ease;
+    font-size:0.78rem;
+  }
+  @keyframes notifSlide { from{opacity:0;transform:translateX(20px)} to{opacity:1;transform:translateX(0)} }
+  .notif-header {
+    font-weight:800; color:var(--text); font-size:0.82rem;
+    display:flex; align-items:center; gap:6px; margin-bottom:4px;
+  }
+  .notif-body { color:var(--text2); line-height:1.5; }
+  .notif.wa { border-left-color:#25d366; background:#dcf8c6; }
+  .notif.sms { border-left-color:#0284c7; background:#e0f2fe; }
+  .notif.alert-notif { border-left-color:var(--danger); background:#fee2e2; }
+  .notif.success-notif { border-left-color:var(--accent); background:#d1fae5; }
+  .notif.pay-notif { border-left-color:var(--payment); background:#fef3c7; }
+  .anim-progress {
+    display:flex; justify-content:center; gap:10px; margin-top:24px;
+  }
+  .prog-dot {
+    width:10px; height:10px; border-radius:50%; background:#334155;
+    transition:all 0.3s;
+  }
+  .prog-dot.active { background:#5eead4; width:30px; border-radius:5px; }
+  .prog-dot.done { background:#0d9488; }
+
+  /* ============ ORDER FLOW ============ */
+  .order-flow {
+    display:flex; align-items:center; justify-content:space-between;
+    gap:14px; flex-wrap:wrap; margin:30px 0;
+  }
+  .order-step {
+    flex:1; min-width:140px; background:rgba(255,255,255,0.05);
+    border:2px solid #334155; border-radius:14px; padding:20px 16px;
+    text-align:center; transition:all 0.4s; position:relative;
+  }
+  .order-step.activated {
+    border-color:#5eead4; background:rgba(94,234,212,0.10);
+    box-shadow:0 0 30px rgba(94,234,212,0.25); transform:scale(1.05);
+  }
+  .order-step .os-ico { font-size:2.4rem; margin-bottom:10px; display:block; }
+  .order-step .os-title { font-size:0.9rem; font-weight:800; color:#e2e8f0; margin-bottom:4px; }
+  .order-step .os-sub { font-size:0.75rem; color:#94a3b8; }
+  .order-arrow { font-size:1.6rem; color:#334155; transition:color 0.4s; }
+  .order-arrow.activated { color:#5eead4; animation:arrowPulse 1s infinite; }
+  @keyframes arrowPulse { 0%,100%{transform:translateX(0);opacity:1} 50%{transform:translateX(6px);opacity:0.7} }
+
+  /* ============ STEPS LIST ============ */
+  .steps { counter-reset:step-counter; list-style:none; padding:0; margin:12px 0; }
+  .steps li {
+    counter-increment:step-counter; position:relative;
+    padding:14px 0 14px 56px; border-bottom:1px solid var(--border);
+    font-size:0.9rem; color:var(--text2); line-height:1.7;
+  }
+  .steps li:last-child { border-bottom:none; }
+  .steps li::before {
+    content:counter(step-counter); position:absolute; left:0; top:12px;
+    width:36px; height:36px; border-radius:50%;
+    background:linear-gradient(135deg,var(--accent),var(--accent-dark));
+    color:white; display:flex; align-items:center; justify-content:center;
+    font-weight:800; font-size:0.95rem;
+    box-shadow:0 3px 10px rgba(13,148,136,0.25);
+  }
+  .steps.customer li::before { background:linear-gradient(135deg,var(--accent2),#075985); box-shadow:0 3px 10px rgba(2,132,199,0.25); }
+  .steps.tech li::before { background:linear-gradient(135deg,var(--accent3),#9a3412); box-shadow:0 3px 10px rgba(234,88,12,0.25); }
+  .steps.ops li::before { background:linear-gradient(135deg,var(--purple),#5b21b6); box-shadow:0 3px 10px rgba(124,58,237,0.25); }
+  .steps.admin li::before { background:linear-gradient(135deg,#16a34a,#166534); box-shadow:0 3px 10px rgba(22,163,74,0.25); }
+  .steps.payment li::before { background:linear-gradient(135deg,var(--payment),#92400e); box-shadow:0 3px 10px rgba(217,119,6,0.25); }
+  .steps li strong { color:var(--text); display:block; margin-bottom:2px; }
+
+  /* ============ CHECK LIST ============ */
+  .check-list { list-style:none; padding:0; }
+  .check-list li {
+    padding:7px 0 7px 30px; position:relative;
+    font-size:0.88rem; color:var(--text2); line-height:1.6;
+  }
+  .check-list li::before {
+    content:'✓'; position:absolute; left:0; top:5px;
+    width:22px; height:22px; border-radius:50%;
+    background:var(--accent); color:white;
+    display:flex; align-items:center; justify-content:center;
+    font-size:0.72rem; font-weight:900;
+  }
+  .check-list li strong { color:var(--text); }
+
+  /* ============ METRIC BAR ============ */
+  .metric-bar {
+    display:flex; align-items:center; gap:20px;
+    background:linear-gradient(135deg,var(--accent-darker),var(--accent-dark));
+    border-radius:14px; padding:24px 32px; color:white;
+    flex-wrap:wrap; margin:20px 0;
+  }
+  .metric-item { flex:1; min-width:140px; text-align:center; }
+  .metric-item .mi-value { font-size:2rem; font-weight:800; letter-spacing:-1px; color:#5eead4; }
+  .metric-item .mi-label {
+    font-size:0.78rem; opacity:0.85; text-transform:uppercase;
+    letter-spacing:1px; font-weight:700; margin-top:4px;
+  }
+  .metric-divider { width:1px; height:50px; background:rgba(255,255,255,0.2); }
+
+  /* ============ STEPPER ============ */
+  .stepper {
+    display:flex; align-items:center; gap:0; margin:20px 0;
+    overflow-x:auto; padding:14px 0;
+  }
+  .step { flex:1; min-width:140px; text-align:center; position:relative; }
+  .step .step-dot {
+    width:42px; height:42px; border-radius:50%; background:var(--surface3);
+    border:2px solid var(--border2); color:var(--text3);
+    display:flex; align-items:center; justify-content:center;
+    margin:0 auto 10px; font-weight:800; font-size:0.9rem; transition:all 0.2s;
+  }
+  .step.done .step-dot { background:var(--accent); border-color:var(--accent); color:#fff; }
+  .step.active .step-dot {
+    background:var(--accent2); border-color:var(--accent2); color:#fff;
+    box-shadow:0 0 0 6px rgba(2,132,199,0.15);
+  }
+  .step .step-label { font-size:0.82rem; color:var(--text2); font-weight:700; }
+  .step.active .step-label { color:var(--accent2); }
+  .step.done .step-label { color:var(--accent-dark); }
+  .step .step-months { font-size:0.7rem; color:var(--text3); margin-top:2px; }
+  .step::after {
+    content:''; position:absolute; top:21px; right:-50%; width:100%;
+    height:2px; background:var(--border); z-index:-1;
+  }
+  .step:last-child::after { display:none; }
+  .step.done::after { background:var(--accent-light); }
+
+  /* ============ FAQ DRILL ============ */
+  .faq-drill {
+    background:var(--surface2); border-radius:10px; padding:14px 18px;
+    margin:10px 0; cursor:pointer; border-left:3px solid var(--accent);
+    transition:all 0.15s;
+  }
+  .faq-drill:hover { background:var(--accent-light); transform:translateX(4px); }
+  .faq-drill .fd-q { font-weight:800; color:var(--accent-darker); font-size:0.92rem; margin-bottom:4px; }
+  .faq-drill .fd-a { font-size:0.85rem; color:var(--text2); display:none; margin-top:8px; line-height:1.65; }
+  .faq-drill.open .fd-a { display:block; }
+
+  /* ============ ROLES GRID (User Guide landing) ============ */
+  .role-hero {
+    background:linear-gradient(135deg,#0f766e 0%,#134e4a 50%,#0a1420 100%);
+    border-radius:16px; padding:40px; color:white; margin-bottom:24px;
+    position:relative; overflow:hidden;
+  }
+  .role-hero::before {
+    content:''; position:absolute; top:-40%; right:-10%;
+    width:500px; height:500px;
+    background:radial-gradient(circle,rgba(13,148,136,0.25),transparent 70%);
+    border-radius:50%;
+  }
+  .role-hero-content { position:relative; z-index:1; }
+  .role-hero .rh-eyebrow {
+    font-size:0.72rem; opacity:0.85; letter-spacing:3px;
+    text-transform:uppercase; font-weight:800; margin-bottom:12px;
+  }
+  .role-hero h1 { font-size:2.2rem; font-weight:900; letter-spacing:-1px; line-height:1.1; margin-bottom:12px; }
+  .role-hero p { font-size:1rem; opacity:0.92; max-width:700px; line-height:1.6; }
+
+  /* ============ FOOTER ============ */
+  .footer {
+    text-align:center; padding:35px 20px; color:var(--text3);
+    font-size:0.78rem; border-top:1px solid var(--border); margin-top:30px;
+  }
+  .footer strong { color:var(--accent); }
+
+  /* ============ MODAL ============ */
+  .modal-overlay {
+    display:none; position:fixed; top:0; left:0; right:0; bottom:0;
+    background:rgba(15,23,42,0.55); backdrop-filter:blur(6px);
+    z-index:1000; align-items:center; justify-content:center; padding:20px;
+  }
+  .modal-overlay.open { display:flex; }
+  .modal {
+    background:var(--surface); border-radius:16px; max-width:760px;
+    width:100%; max-height:85vh; overflow-y:auto;
+    box-shadow:0 20px 60px rgba(15,23,42,0.30); animation:modalIn 0.25s ease;
+  }
+  @keyframes modalIn { from{opacity:0;transform:scale(0.95)} to{opacity:1;transform:scale(1)} }
+  .modal-header {
+    padding:20px 24px; border-bottom:1px solid var(--border);
+    display:flex; align-items:center; justify-content:space-between;
+    position:sticky; top:0; background:var(--surface); z-index:1;
+    border-radius:16px 16px 0 0;
+  }
+  .modal-header h3 { color:var(--accent-darker); font-size:1.1rem; display:flex; align-items:center; gap:8px; }
+  .modal-close {
+    background:var(--surface3); border:1px solid var(--border);
+    color:var(--text2); width:34px; height:34px; border-radius:8px;
+    cursor:pointer; font-size:1rem; display:flex; align-items:center;
+    justify-content:center; transition:all 0.15s;
+  }
+  .modal-close:hover { background:var(--danger); color:white; border-color:var(--danger); }
+  .modal-body { padding:20px 24px 28px; }
+  .review-item {
+    display:flex; align-items:flex-start; gap:12px; padding:14px 0;
+    border-bottom:1px solid var(--border); font-size:0.9rem;
+  }
+  .review-item:last-child { border-bottom:none; }
+  .review-item .ri-ico { font-size:1.2rem; width:26px; text-align:center; flex-shrink:0; }
+  .review-item .ri-content { flex:1; }
+  .review-item .ri-title { color:var(--text); font-weight:700; font-size:0.92rem; }
+  .review-item .ri-desc { color:var(--text2); font-size:0.83rem; margin-top:4px; line-height:1.6; }
+  .review-item .ri-status {
+    font-size:0.65rem; font-weight:800; padding:3px 10px;
+    border-radius:10px; text-transform:uppercase; letter-spacing:0.5px;
+    white-space:nowrap;
+  }
+  .ri-pass { background:var(--accent-light); color:var(--accent-dark); }
+  .ri-warn { background:var(--warning-light); color:var(--warning); }
+  .ri-info { background:var(--accent2-light); color:var(--accent2); }
+
+  /* ============ MOBILE ============ */
+  .mobile-toggle {
+    display:none; background:var(--surface); border:1px solid var(--border2);
+    color:var(--text); padding:8px 12px; border-radius:8px;
+    cursor:pointer; font-size:1rem;
+  }
+  @media(max-width:800px){ .mobile-toggle{display:flex; align-items:center} }
+
+  /* ============ PRINT ============ */
+  @media print {
+    body { background:white; color:black; display:block; font-size:10pt; }
+    .sidebar,.topbar,.tb-btn,.mobile-toggle,.modal-overlay,.no-print { display:none !important; }
+    .main { margin-left:0; }
+    .content { padding:0; max-width:100%; }
+    .view { display:block !important; page-break-after:always; }
+    .view:last-child { page-break-after:auto; }
+    .section { box-shadow:none; border:1px solid #cbd5e1; page-break-inside:avoid; margin-bottom:12px; }
+    .card,.flow-step { box-shadow:none; page-break-inside:avoid; }
+    .video-container { display:none !important; }
+    .mono-block { background:#f1f5f9 !important; color:#1e293b !important; }
+    @page { size:A4; margin:12mm; }
+  }
+
+  /* Role landing cards */
+  .role-card {
+    background:white; border-radius:16px; padding:28px;
+    border:2px solid var(--border); cursor:pointer;
+    transition:all 0.25s; position:relative; overflow:hidden;
+    text-align:center;
+  }
+  .role-card::after {
+    content:''; position:absolute; top:-50%; right:-50%;
+    width:200px; height:200px;
+    background:radial-gradient(circle,rgba(13,148,136,0.10),transparent 70%);
+    border-radius:50%; transition:all 0.4s;
+  }
+  .role-card:hover::after { top:-30%; right:-30%; }
+  .role-card:hover { transform:translateY(-5px); box-shadow:var(--shadow-lg); }
+  .role-card.customer { border-color:var(--accent2); }
+  .role-card.tech { border-color:var(--accent3); }
+  .role-card.ops { border-color:var(--purple); }
+  .role-card.admin { border-color:#16a34a; }
+  .role-card.payment { border-color:var(--payment); }
+  .role-card .rc-icon {
+    font-size:3rem; margin-bottom:14px;
+    display:inline-block;
+  }
+  .role-card .rc-title {
+    font-size:1.15rem; font-weight:800; color:var(--accent-darker);
+    margin-bottom:8px; letter-spacing:-0.3px;
+  }
+  .role-card.customer .rc-title { color:var(--accent2); }
+  .role-card.tech .rc-title { color:var(--accent3); }
+  .role-card.ops .rc-title { color:var(--purple); }
+  .role-card.admin .rc-title { color:#16a34a; }
+  .role-card.payment .rc-title { color:var(--payment); }
+  .role-card .rc-desc {
+    font-size:0.85rem; color:var(--text2); line-height:1.55;
+    margin-bottom:14px; min-height:60px;
+  }
+  .role-card .rc-cta {
+    display:inline-block; padding:8px 20px;
+    background:var(--accent); color:white; border-radius:20px;
+    font-size:0.78rem; font-weight:800; letter-spacing:0.5px;
+    text-transform:uppercase;
+  }
+  .role-card.customer .rc-cta { background:var(--accent2); }
+  .role-card.tech .rc-cta { background:var(--accent3); }
+  .role-card.ops .rc-cta { background:var(--purple); }
+  .role-card.admin .rc-cta { background:#16a34a; }
+  .role-card.payment .rc-cta { background:var(--payment); }
+
+  .back-link {
+    display:inline-flex; align-items:center; gap:8px;
+    padding:8px 16px; background:var(--surface3); color:var(--text2);
+    border-radius:8px; font-size:0.82rem; font-weight:700;
+    cursor:pointer; margin-bottom:18px; transition:all 0.15s;
+  }
+  .back-link:hover { background:var(--accent-light); color:var(--accent-dark); }
+
+</style>
+</head>
+<body>
+
+<!-- ============ SIDEBAR ============ -->
+<aside class="sidebar" id="sidebar">
+  <div class="sb-brand">
+    <h1>🌿 Caribbean Gas Intelligence</h1>
+    <div class="sb-sub">Platform + User Guide v4</div>
+    <span class="sb-badge">Rev. F · Oct 2026</span>
+  </div>
+  <nav class="sb-nav">
+
+    <div class="sb-group-title">Overview</div>
+    <div class="sb-item active" data-view="dashboard"><span class="sb-ico">📊</span>Dashboard</div>
+    <div class="sb-item" data-view="concept"><span class="sb-ico">📄</span>Concept Note</div>
+    <div class="sb-item" data-view="location"><span class="sb-ico">📍</span>Location Analysis</div>
+
+    <div class="sb-group-title">Monitoring Modules</div>
+    <div class="sb-item" data-view="lpg"><span class="sb-ico">🔵</span>LPG Monitoring</div>
+    <div class="sb-item" data-view="biogas"><span class="sb-ico">🟢</span>Biogas Monitoring</div>
+    <div class="sb-item" data-view="ordering"><span class="sb-ico">📲</span>Ordering System</div>
+    <div class="sb-item" data-view="payments"><span class="sb-ico">💳</span>Payment System<span class="sb-tag new">NEW</span></div>
+
+    <div class="sb-group-title">Revolution</div>
+    <div class="sb-item" data-view="impact"><span class="sb-ico">🚀</span>Industry Impact</div>
+
+    <div class="sb-group-title">User Interfaces</div>
+    <div class="sb-item" data-view="app"><span class="sb-ico">📱</span>Customer App</div>
+    <div class="sb-item" data-view="distributor"><span class="sb-ico">🚚</span>Distributor Dashboard</div>
+    <div class="sb-item" data-view="operator"><span class="sb-ico">⚙️</span>Biogas Operator Dashboard</div>
+
+    <div class="sb-group-title">Technical</div>
+    <div class="sb-item" data-view="visuals"><span class="sb-ico">🎨</span>Visual Workflows</div>
+    <div class="sb-item" data-view="architecture"><span class="sb-ico">🏗️</span>System Architecture</div>
+    <div class="sb-item" data-view="workflows"><span class="sb-ico">📑</span>Workflows</div>
+    <div class="sb-item" data-view="hardware"><span class="sb-ico">📡</span>Hardware Gallery</div>
+
+    <div class="sb-group-title">User Guide <span style="font-size:0.55rem;background:var(--accent);color:white;padding:2px 6px;border-radius:6px;margin-left:4px;">NEW</span></div>
+    <div class="sb-item" data-view="users-guide"><span class="sb-ico">📖</span>Guide Home</div>
+    <div class="sb-item" data-view="guide-customer"><span class="sb-ico">🏠</span>Customer Guide</div>
+    <div class="sb-item" data-view="guide-tech"><span class="sb-ico">🔧</span>Technician Guide</div>
+    <div class="sb-item" data-view="guide-ops"><span class="sb-ico">🚚</span>Operations Guide</div>
+    <div class="sb-item" data-view="guide-admin"><span class="sb-ico">💰</span>Admin Guide</div>
+    <div class="sb-item" data-view="guide-payment"><span class="sb-ico">💳</span>Payment Guide</div>
+
+    <div class="sb-group-title">Commercial</div>
+    <div class="sb-item" data-view="financials"><span class="sb-ico">💰</span>Financial Model</div>
+    <div class="sb-item" data-view="budget"><span class="sb-ico">📋</span>Grant Budget</div>
+    <div class="sb-item" data-view="suppliers"><span class="sb-ico">🔗</span>Suppliers &amp; Research</div>
+
+    <div class="sb-group-title">Reference</div>
+    <div class="sb-item" data-view="faq"><span class="sb-ico">❓</span>FAQs</div>
+    <div class="sb-item" data-view="support"><span class="sb-ico">🆘</span>Support</div>
+  </nav>
+</aside>
+
+<!-- ============ MAIN ============ -->
+<div class="main">
+  <div class="topbar">
+    <button class="mobile-toggle" onclick="toggleSidebar()">☰</button>
+    <div class="tb-title">
+      <span id="tbTitle">Dashboard</span>
+      <span class="tb-crumb" id="tbCrumb">/ Executive Summary</span>
+    </div>
+    <button class="tb-btn" onclick="openReview()">🔍 Review Checklist</button>
+    <button class="tb-btn" onclick="window.print()">🖨️ Print</button>
+    <button class="tb-btn primary" onclick="expandAll()">⬇️ Expand All</button>
+  </div>
+
+  <div class="content">
+
+    <!-- ============ DASHBOARD ============ -->
+    <div class="view active" id="view-dashboard">
+      <div class="page-title">
+        <h1>📊 Caribbean Gas Intelligence</h1>
+        <div class="pt-sub">St. Lucia Pilot — LPG Monitoring + Biogas dMRV + Ordering System + Payment Platform + Complete User Guide</div>
+        <div class="pt-tags">
+          <span class="pt-tag accent">Rev. F · Oct 2026</span>
+          <span class="pt-tag blue">6 LPG Sensors + 1 Biogas Kit</span>
+          <span class="pt-tag purple">Gros Islet / Rodney Bay</span>
+          <span class="pt-tag gold">💳 NEW: Payment System</span>
+          <span class="pt-tag hot">📖 NEW: User Guide</span>
+        </div>
+      </div>
+
+      <div class="metric-bar">
+        <div class="metric-item"><div class="mi-value">7</div><div class="mi-label">Sensors Deployed</div></div>
+        <div class="metric-divider"></div>
+        <div class="metric-item"><div class="mi-value">±1%</div><div class="mi-label">LPG Accuracy</div></div>
+        <div class="metric-divider"></div>
+        <div class="metric-item"><div class="mi-value">5%</div><div class="mi-label">Auto-Order Trigger</div></div>
+        <div class="metric-divider"></div>
+        <div class="metric-item"><div class="mi-value">4</div><div class="mi-label">Payment Methods</div></div>
+        <div class="metric-divider"></div>
+        <div class="metric-item"><div class="mi-value">1.2 yr</div><div class="mi-label">Payback (Scale)</div></div>
+      </div>
+
+      <div class="section">
+        <h2><span class="ico">🎯</span> Platform Modules</h2>
+        <div class="grid-4">
+          <div class="card info" onclick="drill('mod-lpg')">
+            <div class="c-label">Module 1</div>
+            <div class="c-value" style="font-size:1.1rem;">LPG Monitoring</div>
+            <div class="c-sub">Real-time level tracking · ±1%</div>
+            <div class="c-hint">▼ DRILL</div>
+          </div>
+          <div class="card purple" onclick="drill('mod-biogas')">
+            <div class="c-label">Module 2</div>
+            <div class="c-value" style="font-size:1.1rem;">Biogas dMRV</div>
+            <div class="c-sub">Digester + carbon credits</div>
+            <div class="c-hint">▼ DRILL</div>
+          </div>
+          <div class="card success" onclick="drill('mod-ordering')">
+            <div class="c-label">Module 3</div>
+            <div class="c-value" style="font-size:1.1rem;">Auto-Ordering</div>
+            <div class="c-sub">5% trigger → SMS + WhatsApp</div>
+            <div class="c-hint">▼ DRILL</div>
+          </div>
+          <div class="card payment" onclick="switchView('payments')">
+            <div class="c-label">Module 4 · NEW</div>
+            <div class="c-value" style="font-size:1.1rem;">💳 Payments</div>
+            <div class="c-sub">Wepay · Cards · Pay-on-delivery</div>
+            <div class="c-hint">VIEW →</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2><span class="ico">🌟</span> Quick Actions</h2>
+        <div class="grid-4">
+          <div class="card kpi" onclick="switchView('ordering')">
+            <div class="c-label">▶ PLAY</div>
+            <div class="c-value" style="font-size:1.05rem;">📲 Ordering Demo</div>
+            <div class="c-sub">Watch the SMS system in action</div>
+          </div>
+          <div class="card kpi" onclick="switchView('lpg')">
+            <div class="c-label">▶ PLAY</div>
+            <div class="c-value" style="font-size:1.05rem;">🔵 LPG Monitoring</div>
+            <div class="c-sub">See how sensors track gas</div>
+          </div>
+          <div class="card payment" onclick="switchView('payments')">
+            <div class="c-label">NEW</div>
+            <div class="c-value" style="font-size:1.05rem;">💳 Payment System</div>
+            <div class="c-sub">Wepay + Cards + Pay on Delivery</div>
+          </div>
+          <div class="card admin" onclick="switchView('users-guide')">
+            <div class="c-label">NEW</div>
+            <div class="c-value" style="font-size:1.05rem;">📖 User Guide</div>
+            <div class="c-sub">Complete guides for all 5 roles</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2><span class="ico">🗺️</span> System Flow</h2>
+        <div class="flow">
+          <div class="flow-step" onclick="drill('flow-sensor')"><span class="ico">📡</span>Sensor</div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step" onclick="drill('flow-lte')"><span class="ico">📶</span>LTE</div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step" onclick="drill('flow-gcft')"><span class="ico">☁️</span>GCFT</div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step" onclick="drill('flow-analytics')"><span class="ico">📊</span>Analytics</div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step" onclick="drill('flow-app')"><span class="ico">📱</span>App</div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step" onclick="drill('flow-credits')"><span class="ico">💬</span>SMS</div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step" onclick="drill('flow-payment')"><span class="ico">💳</span>Pay</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ CONCEPT NOTE ============ -->
+    <div class="view" id="view-concept">
+      <div class="page-title">
+        <h1>📄 Concept Note</h1>
+        <div class="pt-sub">Caribbean Gas Intelligence — St. Lucia Pilot · Full project rationale</div>
+      </div>
+      <div class="section">
+        <h2><span class="ico">1️⃣</span> Background &amp; Rationale</h2>
+        <p>OECS Trading proposes a new division — <strong>Caribbean Gas Intelligence (CGI)</strong> — to deploy a sensor-and-app platform that monitors LPG cylinder levels and biogas digester performance in real time, using the <strong>GCFT platform</strong> as its dMRV backbone. The pilot deploys in the <strong>Gros Islet/Rodney Bay corridor</strong>, St. Lucia's tourism heartland.</p>
+        <div class="alert alert-success">
+          <strong>🔥 The Revolutionary Feature:</strong> When any monitored LPG cylinder drops to <strong>5%</strong>, the system automatically sends an <strong>SMS or WhatsApp message</strong> to the user's preferred distributor — triggering an order without the user having to lift a finger. It also offers <strong>four payment methods</strong> — Wepay, bank cards, bank transfer, and pay-on-delivery.
+        </div>
+      </div>
+      <div class="section">
+        <h2><span class="ico">2️⃣</span> Project Objectives</h2>
+        <div class="grid-4">
+          <div class="card kpi" onclick="drill('cn-obj1')">
+            <div class="c-label">Objective 1</div>
+            <div class="c-value" style="font-size:1rem;">6 LPG Sensors</div>
+            <div class="c-sub">Real-time monitoring</div>
+            <div class="c-hint">▼</div>
+          </div>
+          <div class="card kpi" onclick="drill('cn-obj2')">
+            <div class="c-label">Objective 2</div>
+            <div class="c-value" style="font-size:1rem;">1 Biogas Kit</div>
+            <div class="c-sub">Digester monitoring</div>
+            <div class="c-hint">▼</div>
+          </div>
+          <div class="card kpi" onclick="drill('cn-obj3')">
+            <div class="c-label">Objective 3</div>
+            <div class="c-value" style="font-size:1rem;">GCFT Integration</div>
+            <div class="c-sub">Blockchain + XBRL</div>
+            <div class="c-hint">▼</div>
+          </div>
+          <div class="card payment" onclick="switchView('payments')">
+            <div class="c-label">Objective 4 · NEW</div>
+            <div class="c-value" style="font-size:1rem;">💳 Payments</div>
+            <div class="c-sub">4 methods · Wepay integration</div>
+            <div class="c-hint">VIEW →</div>
+          </div>
+        </div>
+      </div>
+      <div class="section">
+        <h2><span class="ico">3️⃣</span> Target Market</h2>
+        <table>
+          <tr><th>Segment</th><th>Users</th><th>Cylinder Type</th><th>Payment Preference</th></tr>
+          <tr><td>Households (low-income)</td><td>12</td><td>20 lb</td><td>Pay-on-delivery / Wepay</td></tr>
+          <tr><td>Households (middle-income)</td><td>8</td><td>20 lb</td><td>Wepay / Card</td></tr>
+          <tr><td>Commercial kitchens</td><td>1 hotel</td><td>100 lb</td><td>Bank transfer / Card</td></tr>
+        </table>
+      </div>
+      <div class="section">
+        <h2><span class="ico">4️⃣</span> Financial Summary</h2>
+        <table>
+          <tr><th>Item</th><th>Amount</th></tr>
+          <tr><td>Pilot CAPEX</td><td>US$18,000</td></tr>
+          <tr><td>Annual OPEX</td><td>US$45,000</td></tr>
+          <tr><td>Pilot Revenue (Year 1)</td><td>US$4,500</td></tr>
+          <tr><td>Payment Processing Fee</td><td>1.5% per transaction</td></tr>
+          <tr><td>Payback (Scale, 500 sensors)</td><td>1.2 years</td></tr>
+          <tr class="total-row"><td><strong>Revenue at Scale</strong></td><td><strong>US$255,000/year</strong></td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- ============ LOCATION ============ -->
+    <div class="view" id="view-location">
+      <div class="page-title">
+        <h1>📍 Location Analysis</h1>
+        <div class="pt-sub">Gros Islet / Rodney Bay corridor</div>
+      </div>
+      <div class="section">
+        <h2><span class="ico">🎯</span> Strategic Advantages</h2>
+        <div class="grid-2">
+          <div class="card kpi" onclick="drill('loc-deglos')">
+            <div class="c-label">Deglos Landfill</div>
+            <div class="c-value">5,500 t/month</div>
+            <div class="c-sub">50% organic</div>
+            <div class="c-hint">▼</div>
+          </div>
+          <div class="card info" onclick="drill('loc-hotels')">
+            <div class="c-label">Hotel Belt</div>
+            <div class="c-value">12+ hotels</div>
+            <div class="c-sub">High LPG demand</div>
+            <div class="c-hint">▼</div>
+          </div>
+          <div class="card purple" onclick="drill('loc-lpg')">
+            <div class="c-label">LPG Users</div>
+            <div class="c-value">Dense</div>
+            <div class="c-sub">Affluent corridor</div>
+            <div class="c-hint">▼</div>
+          </div>
+          <div class="card warn" onclick="drill('loc-biogas')">
+            <div class="c-label">Existing Biogas</div>
+            <div class="c-value">Partner Sites</div>
+            <div class="c-sub">SALCC + operators</div>
+            <div class="c-hint">▼</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ LPG MONITORING (with Play demo) ============ -->
+    <div class="view" id="view-lpg">
+      <div class="page-title">
+        <h1>🔵 LPG Cylinder Monitoring</h1>
+        <div class="pt-sub">Module 1 — Real-time gas tracking with animated demo</div>
+      </div>
+
+      <div class="section">
+        <h2><span class="ico">🎬</span> Interactive Demo — How It Works</h2>
+        <div class="video-container">
+          <div class="video-header">
+            <div class="vh-label">▶️ Live Animation — Household LPG Monitoring</div>
+            <div class="vh-controls">
+              <button class="video-btn" id="playBtn" onclick="togglePlay()">▶ Play</button>
+              <button class="video-btn" onclick="resetDemo()">↺ Reset</button>
+            </div>
+          </div>
+          <div class="video-stage" id="demoStage">
+
+            <div class="anim-scene active" data-scene="1">
+              <div class="anim-title">Step 1 — Sensor Installation</div>
+              <div class="anim-subtitle">Magnetic attachment · No tank modification · Under 2 minutes</div>
+              <div style="display:flex;justify-content:center;align-items:center;gap:60px;flex-wrap:wrap;margin:40px 0;">
+                <div style="text-align:center;">
+                  <div style="width:180px;height:260px;border-radius:90px 90px 20px 20px;border:4px solid #475569;background:linear-gradient(180deg,#f1f5f9,#cbd5e1);position:relative;box-shadow:0 20px 50px rgba(0,0,0,0.4);">
+                    <div style="position:absolute;top:-24px;left:50%;transform:translateX(-50%);width:36px;height:28px;background:#64748b;border-radius:8px 8px 0 0;"></div>
+                    <div style="position:absolute;bottom:-30px;left:50%;transform:translateX(-50%);width:100px;height:28px;background:#0d9488;border-radius:6px;display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:0.7rem;">MOPEKA PRO+</div>
+                  </div>
+                  <div style="color:#5eead4;font-weight:700;margin-top:40px;font-size:1.1rem;">LPG Cylinder</div>
+                  <div style="color:#94a3b8;font-size:0.85rem;">20 lb / 100 lb</div>
+                </div>
+                <div style="font-size:3rem;color:#5eead4;animation:arrowPulse 1.5s infinite;">⟶</div>
+                <div style="text-align:center;background:rgba(94,234,212,0.1);padding:24px;border-radius:16px;border:2px solid #5eead4;">
+                  <div style="font-size:3rem;">📱</div>
+                  <div style="color:#5eead4;font-weight:800;margin-top:10px;font-size:1rem;">Pair via Bluetooth</div>
+                  <div style="color:#94a3b8;font-size:0.82rem;margin-top:4px;">Instant setup on app</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="anim-scene" data-scene="2">
+              <div class="anim-title">Step 2 — Real-Time Monitoring</div>
+              <div class="anim-subtitle">Sensor reads gas level every 5 seconds · ±1% accuracy</div>
+              <div class="cylinder-anim">
+                <div>
+                  <div class="cyl"><div class="cyl-level" id="cylLevel1" style="height:68%;"></div><div class="cyl-valve"></div></div>
+                  <div class="cyl-label">68% Full</div>
+                  <div class="cyl-status" style="color:#5eead4;">✓ Optimal</div>
+                </div>
+                <div class="phone-mock">
+                  <div class="phone-screen">
+                    <div class="phone-notch"></div>
+                    <div style="margin-top:20px;text-align:center;color:#0f172a;font-weight:800;font-size:0.9rem;margin-bottom:16px;">Cylinder Monitor</div>
+                    <div style="text-align:center;background:linear-gradient(135deg,#0d9488,#0284c7);color:white;border-radius:16px;padding:20px;margin-bottom:14px;">
+                      <div style="font-size:0.72rem;opacity:0.9;text-transform:uppercase;letter-spacing:1px;font-weight:700;">Current Level</div>
+                      <div style="font-size:2.6rem;font-weight:800;letter-spacing:-1px;">68%</div>
+                      <div style="font-size:0.78rem;opacity:0.9;">≈ 12 days remaining</div>
+                    </div>
+                    <div class="notif success-notif"><div class="notif-header">📊 Consumption</div><div class="notif-body">2.5 kg/week avg</div></div>
+                    <div class="notif sms"><div class="notif-header">📈 Trend</div><div class="notif-body">Usage steady this week</div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="anim-scene" data-scene="3">
+              <div class="anim-title">Step 3 — Runout Alert Triggered</div>
+              <div class="anim-subtitle">When level drops below 5% · SMS + WhatsApp dispatched</div>
+              <div class="cylinder-anim">
+                <div>
+                  <div class="cyl"><div class="cyl-level" id="cylLevel2" style="height:8%;background:linear-gradient(180deg,#fca5a5,#dc2626);"></div><div class="cyl-valve"></div></div>
+                  <div class="cyl-label" style="color:#fca5a5;">5% — CRITICAL</div>
+                  <div class="cyl-status" style="color:#fca5a5;">⚠ Auto-order triggered</div>
+                </div>
+                <div class="phone-mock">
+                  <div class="phone-screen">
+                    <div class="phone-notch"></div>
+                    <div style="margin-top:20px;text-align:center;color:#0f172a;font-weight:800;font-size:0.9rem;margin-bottom:16px;">🔔 Alerts</div>
+                    <div class="notif alert-notif"><div class="notif-header">⚠️ LOW GAS WARNING</div><div class="notif-body"><strong>5% remaining.</strong> Auto-order sent.</div></div>
+                    <div class="notif wa"><div class="notif-header">💬 WhatsApp — Massy Gas</div><div class="notif-body"><strong>New order!</strong> Mrs. Joseph, Rodney Bay</div></div>
+                    <div class="notif sms"><div class="notif-header">📲 SMS Confirmation</div><div class="notif-body">Order #MB-2847 confirmed.</div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="anim-scene" data-scene="4">
+              <div class="anim-title">Step 4 — Refill Delivered &amp; Paid</div>
+              <div class="anim-subtitle">Payment auto-processed via Wepay or collected on delivery</div>
+              <div class="cylinder-anim">
+                <div>
+                  <div class="cyl"><div class="cyl-level" id="cylLevel3" style="height:100%;"></div><div class="cyl-valve"></div></div>
+                  <div class="cyl-label" style="color:#5eead4;">100% — REFILLED</div>
+                  <div class="cyl-status" style="color:#5eead4;">✓ Delivered &amp; Paid</div>
+                </div>
+                <div class="phone-mock">
+                  <div class="phone-screen">
+                    <div class="phone-notch"></div>
+                    <div style="margin-top:20px;text-align:center;color:#0f172a;font-weight:800;font-size:0.9rem;margin-bottom:16px;">✓ Complete</div>
+                    <div style="text-align:center;background:linear-gradient(135deg,#0d9488,#0284c7);color:white;border-radius:16px;padding:20px;margin-bottom:14px;">
+                      <div style="font-size:2.4rem;">✓</div>
+                      <div style="font-size:1rem;font-weight:800;margin-top:6px;">Delivered</div>
+                      <div style="font-size:0.78rem;opacity:0.9;">Order #MB-2847</div>
+                    </div>
+                    <div class="notif pay-notif"><div class="notif-header">💳 Payment</div><div class="notif-body">$36.00 charged via Wepay</div></div>
+                    <div class="notif success-notif"><div class="notif-header">✓ Receipt</div><div class="notif-body">Digital receipt sent</div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="anim-progress">
+              <div class="prog-dot active" data-prog="1"></div>
+              <div class="prog-dot" data-prog="2"></div>
+              <div class="prog-dot" data-prog="3"></div>
+              <div class="prog-dot" data-prog="4"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2><span class="ico">📊</span> Sensor Comparison</h2>
+        <div class="grid-3">
+          <div class="card kpi" onclick="drill('lpg-mopeka')">
+            <div class="c-label">Mopeka PRO+ LTE ✅</div>
+            <div class="c-value">±1%</div>
+            <div class="c-sub">Sonar · 5-yr battery · $189</div>
+            <div class="c-hint">▼</div>
+          </div>
+          <div class="card info" onclick="drill('lpg-alevel')">
+            <div class="c-label">ALEVEL 1x5</div>
+            <div class="c-value">±2–5%</div>
+            <div class="c-sub">Hall-effect · 15-yr battery · $150</div>
+            <div class="c-hint">▼</div>
+          </div>
+          <div class="card purple" onclick="drill('lpg-linktra')">
+            <div class="c-label">Ragasco Linktra</div>
+            <div class="c-value">3%</div>
+            <div class="c-sub">Integrated cylinder · >10-yr battery</div>
+            <div class="c-hint">▼</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ BIOGAS MONITORING ============ -->
+    <div class="view" id="view-biogas">
+      <div class="page-title">
+        <h1>🟢 Biogas Digester Monitoring</h1>
+        <div class="pt-sub">Module 2 — Continuous monitoring for existing biogas businesses</div>
+      </div>
+      <div class="section">
+        <h2><span class="ico">ℹ️</span> Purpose</h2>
+        <div class="alert alert-info">
+          <strong>ℹ️ Purpose:</strong> This module monitors <strong>existing biogas digesters</strong> — NOT to develop cylinders, but to track gas production, digester health, and carbon credit documentation. Sold to biogas businesses as a monitoring service.
+        </div>
+      </div>
+      <div class="section">
+        <h2><span class="ico">📊</span> What the Biogas Operator Sees</h2>
+        <div class="mono-block">╔══════════════════════════════════════════════════════════════════════════════════════╗
+║                    BIOGAS OPERATOR DASHBOARD (GCFT)                                  ║
+╚══════════════════════════════════════════════════════════════════════════════════════╝
+
+  PRODUCTION SUMMARY
+  ┌──────────────────────────────────────────────────────────────────────────────────┐
+  │  Daily gas production  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░   4.5 m³/day  ✅ ABOVE    │
+  │  Methane content       ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░   62%        ✅ GOOD      │
+  │  Digester temp         ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░   33°C       ✅ OPTIMAL   │
+  │  Pressure              ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░   1.2 bar    ✅ NORMAL    │
+  │  H₂S                   ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░   42 ppm     ✅ SAFE      │
+  └──────────────────────────────────────────────────────────────────────────────────┘
+
+  CARBON CREDIT REGISTER
+  ┌──────────────────────────────────────────────────────────────────────────────────┐
+  │  Quarter 1    12.0 tCO₂e verified · 8,640 blockchain records                     │
+  │  Credit value US$735 (YTD, at $30/tonne)                                         │
+  │  Eligibility  Gold Standard GS4GG: Confirmed ✅                                  │
+  └──────────────────────────────────────────────────────────────────────────────────┘</div>
+      </div>
+    </div>
+
+    <!-- ============ ORDERING SYSTEM (with Play demo) ============ -->
+    <div class="view" id="view-ordering">
+      <div class="page-title">
+        <h1>📲 Ordering System — Revolutionary Feature</h1>
+        <div class="pt-sub">Auto-orders via SMS + WhatsApp when LPG drops to 5%</div>
+      </div>
+
+      <div class="section">
+        <h2><span class="ico">🎬</span> Interactive Demo — Order Flow</h2>
+        <div class="video-container">
+          <div class="video-header">
+            <div class="vh-label">📲 Live Ordering Demo — 5% Trigger → Distributor → Payment</div>
+            <div class="vh-controls">
+              <button class="video-btn" id="orderPlayBtn" onclick="toggleOrderDemo()">▶ Play Order Flow</button>
+              <button class="video-btn" onclick="resetOrderDemo()">↺ Reset</button>
+            </div>
+          </div>
+          <div class="video-stage" id="orderStage" style="min-height:520px;">
+            <div style="width:100%;max-width:1200px;">
+              <div class="anim-title" style="text-align:center;">Gas Level: <span id="orderLevel" style="color:#5eead4;">80%</span></div>
+              <div class="anim-subtitle" id="orderStatus" style="text-align:center;">Monitoring in real time...</div>
+
+              <div class="order-flow">
+                <div class="order-step" id="orderStep1"><span class="os-ico">🔵</span><div class="os-title">Cylinder</div><div class="os-sub">Level detected</div></div>
+                <div class="order-arrow" id="orderArrow1">⟶</div>
+                <div class="order-step" id="orderStep2"><span class="os-ico">📡</span><div class="os-title">Sensor</div><div class="os-sub">Reads every 5 sec</div></div>
+                <div class="order-arrow" id="orderArrow2">⟶</div>
+                <div class="order-step" id="orderStep3"><span class="os-ico">☁️</span><div class="os-title">GCFT</div><div class="os-sub">Analyzes threshold</div></div>
+                <div class="order-arrow" id="orderArrow3">⟶</div>
+                <div class="order-step" id="orderStep4"><span class="os-ico">📲</span><div class="os-title">SMS/WhatsApp</div><div class="os-sub">Notifies distributor</div></div>
+                <div class="order-arrow" id="orderArrow4">⟶</div>
+                <div class="order-step" id="orderStep5"><span class="os-ico">💳</span><div class="os-title">Payment</div><div class="os-sub">Auto-charge or on delivery</div></div>
+              </div>
+
+              <div style="display:flex;justify-content:center;gap:40px;margin-top:30px;flex-wrap:wrap;">
+                <div class="phone-mock" style="width:260px;height:500px;">
+                  <div class="phone-screen">
+                    <div class="phone-notch"></div>
+                    <div style="margin-top:20px;text-align:center;color:#0f172a;font-weight:800;font-size:0.9rem;margin-bottom:16px;">💬 Messages</div>
+                    <div id="orderMessages" style="min-height:380px;"></div>
+                  </div>
+                </div>
+                <div style="background:rgba(94,234,212,0.08);border:2px solid #334155;border-radius:16px;padding:24px;max-width:380px;">
+                  <div style="color:#5eead4;font-weight:800;font-size:1.1rem;margin-bottom:12px;">📊 Business Impact</div>
+                  <div id="orderImpact" style="color:#94a3b8;font-size:0.88rem;line-height:1.8;">
+                    Click <strong style="color:#5eead4;">▶ Play Order Flow</strong> to see the system in action.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ PAYMENT SYSTEM (NEW) ============ -->
+    <div class="view" id="view-payments">
+      <div class="page-title">
+        <h1>💳 Payment System</h1>
+        <div class="pt-sub">Four payment methods — Wepay, bank cards, bank transfer, and pay-on-delivery</div>
+        <div class="pt-tags">
+          <span class="pt-tag gold">🔥 NEW MODULE</span>
+          <span class="pt-tag accent">Wepay Integrated</span>
+          <span class="pt-tag blue">PCI-DSS Compliant</span>
+          <span class="pt-tag purple">Pay on Delivery</span>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2><span class="ico">💰</span> Four Ways to Pay</h2>
+        <div class="grid-4">
+          <div class="card payment" onclick="drill('pay-wepay')">
+            <div class="c-label">Method 1 · RECOMMENDED</div>
+            <div class="c-value" style="font-size:1.1rem;">📱 Wepay</div>
+            <div class="c-sub">Caribbean mobile wallet · Auto-charge on delivery</div>
+            <div class="c-hint">▼ DETAILS</div>
+          </div>
+          <div class="card payment" onclick="drill('pay-card')">
+            <div class="c-label">Method 2</div>
+            <div class="c-value" style="font-size:1.1rem;">💳 Bank Card</div>
+            <div class="c-sub">Visa, Mastercard, Amex, local debit cards</div>
+            <div class="c-hint">▼ DETAILS</div>
+          </div>
+          <div class="card payment" onclick="drill('pay-bank')">
+            <div class="c-label">Method 3</div>
+            <div class="c-value" style="font-size:1.1rem;">🏦 Bank Transfer</div>
+            <div class="c-sub">For commercial accounts · Net 15</div>
+            <div class="c-hint">▼ DETAILS</div>
+          </div>
+          <div class="card payment" onclick="drill('pay-delivery')">
+            <div class="c-label">Method 4 · FLEXIBLE</div>
+            <div class="c-value" style="font-size:1.1rem;">💵 Pay on Delivery</div>
+            <div class="c-sub">Cash, card, or Wepay at the door</div>
+            <div class="c-hint">▼ DETAILS</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2><span class="ico">📱</span> Wepay — The Recommended Method</h2>
+        <p>Wepay is the Caribbean's most widely used mobile wallet. CGI is fully integrated with Wepay for seamless auto-payments.</p>
+
+        <h3>Setup (One Time)</h3>
+        <ol class="steps payment">
+          <li><strong>Settings → Payment Methods → Add Method</strong></li>
+          <li><strong>Select Wepay</strong> from the list</li>
+          <li><strong>Enter your Wepay mobile number</strong></li>
+          <li><strong>Authorise via SMS</strong> — tap the link in the Wepay message</li>
+          <li><strong>Enter your Wepay PIN</strong> to link accounts</li>
+          <li><strong>Confirmation</strong> — the app shows "Wepay linked successfully"</li>
+        </ol>
+
+        <h3>How It Works</h3>
+        <ul class="check-list">
+          <li>When the driver confirms delivery, the payment is auto-processed</li>
+          <li>You receive a Wepay SMS confirming the amount ($36 for 20 lb cylinder)</li>
+          <li>A receipt is emailed and visible in-app under Orders → Receipts</li>
+          <li>If Wepay balance is insufficient, we send a WhatsApp prompt to top up</li>
+        </ul>
+
+        <div class="alert alert-tip">
+          <span class="a-title">💡 Why Wepay?</span>
+          No card required · Instant confirmation · No cash handling · Works on any smartphone · Refunds in under 24 hours. Transaction fees: $0.30–$0.50 per transaction (absorbed by CGI).
+        </div>
+      </div>
+
+      <div class="section">
+        <h2><span class="ico">💳</span> Bank Cards</h2>
+        <div class="grid-2">
+          <div class="card payment" onclick="drill('card-local')">
+            <div class="c-label">Local Debit Cards</div>
+            <div class="c-value" style="font-size:1.05rem;">🏦 Caribbean Banks</div>
+            <div class="c-sub">Bank of Saint Lucia · RBC · 1st National · CIBC</div>
+            <div class="c-hint">▼ DETAILS</div>
+          </div>
+          <div class="card payment" onclick="drill('card-intl')">
+            <div class="c-label">International Cards</div>
+            <div class="c-value" style="font-size:1.05rem;">🌍 Visa · Mastercard · Amex</div>
+            <div class="c-sub">3D-Secure authentication required</div>
+            <div class="c-hint">▼ DETAILS</div>
+          </div>
+        </div>
+        <div class="alert alert-info" style="margin-top:14px;">
+          <span class="a-title">🔒 Security</span>
+          Card data is <strong>never stored on CGI servers</strong>. All processing is handled by PCI-DSS compliant gateways. Only a tokenised reference is stored — even in the event of a breach, card details are safe.
+        </div>
+      </div>
+
+      <div class="section">
+        <h2><span class="ico">💵</span> Pay on Delivery</h2>
+        <p>No pre-payment, no card on file — pay the driver when your refill arrives.</p>
+
+        <div class="flow">
+          <div class="flow-step" onclick="drill('pod-1')"><span class="ico">🔔</span>Order Placed</div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step" onclick="drill('pod-2')"><span class="ico">📲</span>Driver Notified</div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step" onclick="drill('pod-3')"><span class="ico">🚚</span>Driver Arrives</div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step" onclick="drill('pod-4')"><span class="ico">💰</span>You Pay</div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step" onclick="drill('pod-5')"><span class="ico">✓</span>Confirmed</div>
+        </div>
+
+        <h3>What the Driver Will Accept</h3>
+        <table>
+          <tr><th>Payment Type</th><th>Accepted?</th><th>Notes</th></tr>
+          <tr><td>Cash (EC dollars)</td><td>✅ Yes</td><td>Preferred. Exact amount appreciated.</td></tr>
+          <tr><td>Cash (US dollars)</td><td>✅ Yes</td><td>Change given at daily rate.</td></tr>
+          <tr><td>Local debit card</td><td>✅ Yes</td><td>Driver carries mobile card reader.</td></tr>
+          <tr><td>Credit card</td><td>✅ Yes</td><td>Visa, Mastercard, Amex.</td></tr>
+          <tr><td>Wepay on the spot</td><td>✅ Yes</td><td>Driver initiates transaction on tablet.</td></tr>
+          <tr><td>Cheque</td><td>❌ No</td><td>Only for pre-approved commercial accounts.</td></tr>
+        </table>
+      </div>
+
+      <div class="section">
+        <h2><span class="ico">🎬</span> Interactive Payment Demo</h2>
+        <div class="video-container">
+          <div class="video-header">
+            <div class="vh-label">💳 Payment Flow — Auto-Charge vs Pay on Delivery</div>
+            <div class="vh-controls">
+              <button class="video-btn" onclick="togglePaymentDemo()">▶ Play</button>
+              <button class="video-btn" onclick="resetPaymentDemo()">↺ Reset</button>
+            </div>
+          </div>
+          <div class="video-stage" id="paymentStage" style="min-height:420px;">
+            <div class="anim-scene active" data-pay-scene="1">
+              <div class="anim-title">Choose Your Payment Method</div>
+              <div class="anim-subtitle">Four options · Change any time · No lock-in</div>
+              <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:20px;max-width:900px;margin:30px auto;">
+                <div style="background:rgba(217,119,6,0.15);border:2px solid #d97706;border-radius:14px;padding:22px;text-align:center;">
+                  <div style="font-size:2.5rem;">📱</div>
+                  <div style="color:#fbbf24;font-weight:800;margin-top:12px;">Wepay</div>
+                  <div style="color:#94a3b8;font-size:0.78rem;margin-top:4px;">Auto-charge</div>
+                </div>
+                <div style="background:rgba(2,132,199,0.15);border:2px solid #0284c7;border-radius:14px;padding:22px;text-align:center;">
+                  <div style="font-size:2.5rem;">💳</div>
+                  <div style="color:#7dd3fc;font-weight:800;margin-top:12px;">Card</div>
+                  <div style="color:#94a3b8;font-size:0.78rem;margin-top:4px;">Auto-charge</div>
+                </div>
+                <div style="background:rgba(124,58,237,0.15);border:2px solid #7c3aed;border-radius:14px;padding:22px;text-align:center;">
+                  <div style="font-size:2.5rem;">🏦</div>
+                  <div style="color:#c4b5fd;font-weight:800;margin-top:12px;">Bank Transfer</div>
+                  <div style="color:#94a3b8;font-size:0.78rem;margin-top:4px;">Commercial</div>
+                </div>
+                <div style="background:rgba(13,148,136,0.15);border:2px solid #0d9488;border-radius:14px;padding:22px;text-align:center;">
+                  <div style="font-size:2.5rem;">💵</div>
+                  <div style="color:#5eead4;font-weight:800;margin-top:12px;">Pay on Delivery</div>
+                  <div style="color:#94a3b8;font-size:0.78rem;margin-top:4px;">Cash/Card/Wepay</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ INDUSTRY IMPACT ============ -->
+    <div class="view" id="view-impact">
+      <div class="page-title">
+        <h1>🚀 Industry Impact</h1>
+        <div class="pt-sub">How CGI transforms Caribbean LPG distribution</div>
+      </div>
+      <div class="section">
+        <h2><span class="ico">📊</span> Market Opportunity</h2>
+        <div class="metric-bar">
+          <div class="metric-item"><div class="mi-value">$1.2B</div><div class="mi-label">Caribbean LPG Market</div></div>
+          <div class="metric-divider"></div>
+          <div class="metric-item"><div class="mi-value">2.8M</div><div class="mi-label">LPG Households</div></div>
+          <div class="metric-divider"></div>
+          <div class="metric-item"><div class="mi-value">18%</div><div class="mi-label">Annual Cylinder Waste</div></div>
+          <div class="metric-divider"></div>
+          <div class="metric-item"><div class="mi-value">$420M</div><div class="mi-label">CGI Addressable Market</div></div>
+        </div>
+      </div>
+      <div class="section">
+        <h2><span class="ico">🎯</span> Four Pillars of Revolution</h2>
+        <div class="grid-2">
+          <div class="card success"><div class="c-label">Pillar 1 — Customers</div><div class="c-value" style="font-size:1.1rem;">Zero Runouts</div><div class="c-sub">Auto-ordering means customers never run out of gas. Multiple payment methods remove friction.</div></div>
+          <div class="card info"><div class="c-label">Pillar 2 — Distributors</div><div class="c-value" style="font-size:1.1rem;">Route Optimisation</div><div class="c-sub">38% fuel savings · 65% overtime reduction · 95% truck fill rate</div></div>
+          <div class="card purple"><div class="c-label">Pillar 3 — Inventory</div><div class="c-value" style="font-size:1.1rem;">99% Accuracy</div><div class="c-sub">Every cylinder tracked · Predictive restocking · Zero stockouts</div></div>
+          <div class="card payment"><div class="c-label">Pillar 4 — Payments</div><div class="c-value" style="font-size:1.1rem;">Frictionless</div><div class="c-sub">Wepay · Cards · Pay-on-delivery · Reduced cash handling</div></div>
+        </div>
+      </div>
+      <div class="section">
+        <h2><span class="ico">📈</span> Caribbean Market Expansion</h2>
+        <table>
+          <tr><th>Country</th><th>Population</th><th>LPG Households</th><th>CGI Opportunity</th></tr>
+          <tr><td>🇱🇨 Saint Lucia</td><td>180,000</td><td>42,000</td><td>Pilot</td></tr>
+          <tr><td>🇧🇧 Barbados</td><td>287,000</td><td>75,000</td><td>Year 2</td></tr>
+          <tr><td>🇬🇩 Grenada</td><td>125,000</td><td>32,000</td><td>Year 2</td></tr>
+          <tr><td>🇦🇬 Antigua &amp; Barbuda</td><td>98,000</td><td>26,000</td><td>Year 3</td></tr>
+          <tr><td>🇩🇲 Dominica</td><td>72,000</td><td>19,000</td><td>Year 3</td></tr>
+          <tr><td>🇻🇨 St. Vincent &amp; Grenadines</td><td>110,000</td><td>28,000</td><td>Year 3</td></tr>
+          <tr><td>🇹🇹 Trinidad &amp; Tobago</td><td>1,400,000</td><td>380,000</td><td>Year 4</td></tr>
+          <tr class="total-row"><td><strong>Total OECS Market</strong></td><td><strong>2,272,000</strong></td><td><strong>602,000</strong></td><td><strong>$85M</strong></td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- ============ APP ============ -->
+    <div class="view" id="view-app">
+      <div class="page-title">
+        <h1>📱 Customer App</h1>
+        <div class="pt-sub">Household mobile app</div>
+      </div>
+      <div class="section">
+        <h2><span class="ico">🎨</span> App Screen Mockups</h2>
+        <div class="grid-2">
+          <div class="card" onclick="drill('app-screen1')">
+            <div class="c-label">Home Screen</div>
+            <div class="c-value" style="font-size:1.05rem;">Gas Level: 68%</div>
+            <div class="c-sub">Estimated 12 days remaining</div>
+            <div class="c-hint">▼</div>
+          </div>
+          <div class="card" onclick="drill('app-screen2')">
+            <div class="c-label">Runout Alert</div>
+            <div class="c-value" style="font-size:1.05rem;">⚠ 5% — Auto-Ordered</div>
+            <div class="c-sub">SMS + WhatsApp dispatched</div>
+            <div class="c-hint">▼</div>
+          </div>
+          <div class="card payment" onclick="drill('app-screen-pay')">
+            <div class="c-label">Payment Screen · NEW</div>
+            <div class="c-value" style="font-size:1.05rem;">💳 Choose Method</div>
+            <div class="c-sub">Wepay · Card · Pay on Delivery</div>
+            <div class="c-hint">▼</div>
+          </div>
+          <div class="card" onclick="drill('app-screen4')">
+            <div class="c-label">Order Tracking</div>
+            <div class="c-value" style="font-size:1.05rem;">📍 Out for Delivery</div>
+            <div class="c-sub">Driver: John · ETA: 4:30 PM</div>
+            <div class="c-hint">▼</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ DISTRIBUTOR ============ -->
+    <div class="view" id="view-distributor">
+      <div class="page-title">
+        <h1>🚚 Distributor Dashboard</h1>
+        <div class="pt-sub">Fleet view, route optimisation, auto-order queue</div>
+      </div>
+      <div class="section">
+        <h2><span class="ico">📊</span> Live Operations</h2>
+        <div class="grid-4">
+          <div class="card kpi" onclick="drill('dist-fleet')">
+            <div class="c-label">Fleet View</div>
+            <div class="c-value">500</div>
+            <div class="c-sub">Cylinders monitored</div>
+            <div class="c-hint">▼</div>
+          </div>
+          <div class="card info" onclick="drill('dist-route')">
+            <div class="c-label">Route Optimisation</div>
+            <div class="c-value">-30%</div>
+            <div class="c-sub">Delivery time</div>
+            <div class="c-hint">▼</div>
+          </div>
+          <div class="card success" onclick="drill('dist-auto')">
+            <div class="c-label">Auto-Orders Today</div>
+            <div class="c-value">28</div>
+            <div class="c-sub">5% triggered</div>
+            <div class="c-hint">▼</div>
+          </div>
+          <div class="card payment" onclick="drill('dist-pay')">
+            <div class="c-label">Payments Collected</div>
+            <div class="c-value">$4,120</div>
+            <div class="c-sub">Wepay + Cash today</div>
+            <div class="c-hint">▼</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ OPERATOR ============ -->
+    <div class="view" id="view-operator">
+      <div class="page-title">
+        <h1>⚙️ Biogas Operator Dashboard</h1>
+        <div class="pt-sub">Production tracking &amp; carbon credits</div>
+      </div>
+      <div class="section">
+        <h2><span class="ico">🎯</span> Dashboard Features</h2>
+        <div class="grid-3">
+          <div class="card kpi" onclick="drill('op-production')">
+            <div class="c-label">Production</div>
+            <div class="c-value">4.5 m³/day</div>
+            <div class="c-sub">Real-time output</div>
+            <div class="c-hint">▼</div>
+          </div>
+          <div class="card info" onclick="drill('op-carbon')">
+            <div class="c-label">Carbon Credits</div>
+            <div class="c-value">12 tCO₂e/yr</div>
+            <div class="c-sub">Blockchain-verified</div>
+            <div class="c-hint">▼</div>
+          </div>
+          <div class="card purple" onclick="drill('op-maintenance')">
+            <div class="c-label">Predictive</div>
+            <div class="c-value">AI-powered</div>
+            <div class="c-sub">Early warning</div>
+            <div class="c-hint">▼</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ VISUAL WORKFLOWS ============ -->
+    <div class="view" id="view-visuals">
+      <div class="page-title">
+        <h1>🎨 Visual Workflows &amp; Architecture</h1>
+        <div class="pt-sub">Colorful, animated flowcharts</div>
+      </div>
+      <div class="section">
+        <h2><span class="ico">🔄</span> Workflow 1 — Hardware → Cloud → Action</h2>
+        <div style="display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:0;padding:30px 0;">
+          <div style="flex:1;min-width:140px;text-align:center;position:relative;">
+            <div style="width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,#0d9488,#0f766e);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;box-shadow:0 8px 24px rgba(13,148,136,0.3);"><span style="font-size:2.2rem;">🔵</span></div>
+            <div style="font-weight:800;color:#134e4a;font-size:0.9rem;">LPG Cylinder</div>
+            <div style="color:#64748b;font-size:0.78rem;">20 lb / 100 lb</div>
+            <div style="position:absolute;top:38px;right:-20px;font-size:1.5rem;color:#0d9488;font-weight:bold;">⟶</div>
+          </div>
+          <div style="flex:1;min-width:140px;text-align:center;position:relative;">
+            <div style="width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,#0284c7,#0369a1);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;box-shadow:0 8px 24px rgba(2,132,199,0.3);"><span style="font-size:2.2rem;">📡</span></div>
+            <div style="font-weight:800;color:#075985;font-size:0.9rem;">Mopeka Sensor</div>
+            <div style="color:#64748b;font-size:0.78rem;">±1% accuracy</div>
+            <div style="position:absolute;top:38px;right:-20px;font-size:1.5rem;color:#0284c7;font-weight:bold;">⟶</div>
+          </div>
+          <div style="flex:1;min-width:140px;text-align:center;position:relative;">
+            <div style="width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#6d28d9);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;box-shadow:0 8px 24px rgba(124,58,237,0.3);"><span style="font-size:2.2rem;">📶</span></div>
+            <div style="font-weight:800;color:#5b21b6;font-size:0.9rem;">LTE Cat-M1</div>
+            <div style="color:#64748b;font-size:0.78rem;">Cellular</div>
+            <div style="position:absolute;top:38px;right:-20px;font-size:1.5rem;color:#7c3aed;font-weight:bold;">⟶</div>
+          </div>
+          <div style="flex:1;min-width:140px;text-align:center;position:relative;">
+            <div style="width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,#ea580c,#c2410c);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;box-shadow:0 8px 24px rgba(234,88,12,0.3);"><span style="font-size:2.2rem;">☁️</span></div>
+            <div style="font-weight:800;color:#9a3412;font-size:0.9rem;">GCFT Cloud</div>
+            <div style="color:#64748b;font-size:0.78rem;">Blockchain</div>
+            <div style="position:absolute;top:38px;right:-20px;font-size:1.5rem;color:#ea580c;font-weight:bold;">⟶</div>
+          </div>
+          <div style="flex:1;min-width:140px;text-align:center;position:relative;">
+            <div style="width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,#d97706,#b45309);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;box-shadow:0 8px 24px rgba(217,119,6,0.3);"><span style="font-size:2.2rem;">💬</span></div>
+            <div style="font-weight:800;color:#92400e;font-size:0.9rem;">SMS / WhatsApp</div>
+            <div style="color:#64748b;font-size:0.78rem;">Auto-order</div>
+            <div style="position:absolute;top:38px;right:-20px;font-size:1.5rem;color:#d97706;font-weight:bold;">⟶</div>
+          </div>
+          <div style="flex:1;min-width:140px;text-align:center;">
+            <div style="width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,#16a34a,#15803d);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;box-shadow:0 8px 24px rgba(22,163,74,0.3);"><span style="font-size:2.2rem;">💳</span></div>
+            <div style="font-weight:800;color:#14532d;font-size:0.9rem;">Payment</div>
+            <div style="color:#64748b;font-size:0.78rem;">Wepay / Card / Cash</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ ARCHITECTURE ============ -->
+    <div class="view" id="view-architecture">
+      <div class="page-title">
+        <h1>🏗️ System Architecture</h1>
+      </div>
+      <div class="section">
+        <h2><span class="ico">🔧</span> Layered Architecture</h2>
+        <div class="mono-block" style="font-size:0.78rem;">╔══════════════════════════════════════════════════════════════════════════════════════════════════════════╗
+║                          CARIBBEAN GAS INTELLIGENCE — FULL SYSTEM ARCHITECTURE                           ║
+╚══════════════════════════════════════════════════════════════════════════════════════════════════════════╝
+
+  LAYER 1: SENSORS &amp; EDGE DEVICES
+  ┌─────────────────────────────┐         ┌─────────────────────────────┐
+  │  6 × Mopeka PRO+ LTE        │         │  1 × Gasboard-9060          │
+  │  ±1% · 5-yr battery         │         │  CH₄, CO₂, H₂S, O₂          │
+  └──────────┬──────────────────┘         └──────────┬──────────────────┘
+             │                                        │
+  LAYER 2: CONNECTIVITY
+  ┌────────────────────────────────────────────────────────────────────────────────────────────┐
+  │  • LTE Cat-M1 / NB-IoT (primary) · Bluetooth LE · Wi-Fi fallback · 30-day local buffering  │
+  └────────────────────────────────┬───────────────────────────────────────────────────────────┘
+                                    │
+  LAYER 3: GCFT CLOUD PLATFORM (SOVEREIGN BACKBONE)
+  ┌────────────────────────────────────────────────────────────────────────────────────────────┐
+  │  DATA INGESTION · AI ANALYTICS · REPORTING · BLOCKCHAIN AUDIT · PAYMENT GATEWAY              │
+  └────────────────────────────────┬───────────────────────────────────────────────────────────┘
+                                    │
+  LAYER 4: USER INTERFACES
+  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐
+  │ HOUSEHOLD APP│  │ DISTRIBUTOR  │  │ BIOGAS OPS   │  │ SMS/WHATSAPP │  │ PAYMENT APIs │
+  │              │  │ DASHBOARD    │  │ DASHBOARD    │  │              │  │ Wepay · Cards│
+  └──────────────┘  └──────────────┘  └──────────────┘  └──────────────┘  └──────────────┘</div>
+      </div>
+    </div>
+
+    <!-- ============ WORKFLOWS ============ -->
+    <div class="view" id="view-workflows">
+      <div class="page-title">
+        <h1>📑 Operational Workflows</h1>
+      </div>
+      <div class="section">
+        <h2><span class="ico">📋</span> Auto-Order Workflow — 5% Trigger</h2>
+        <div class="mono-block" style="font-size:0.78rem;">T-0: CYLINDER DROPS TO 5%
+  └─ Mopeka Sensor reads 5% → Transmits via LTE → GCFT cloud
+
+T+5s: GCFT DETECTS THRESHOLD
+  └─ SMS to user: "Low gas warning. Auto-order sent."
+  └─ WhatsApp to user with reorder confirmation
+  └─ Auto-order created in distributor queue
+  └─ Blockchain record hash computed
+
+T+10s: DISTRIBUTOR NOTIFICATION
+  └─ SMS to distributor: "New order: Mrs. Joseph, Rodney Bay, 20 lb"
+  └─ WhatsApp with GPS pin, ETA auto-calculated
+  └─ Order appears in live queue with priority
+
+T+15s: ROUTE OPTIMISATION + PAYMENT METHOD
+  └─ AI assigns nearest available driver
+  └─ Groups with other nearby orders
+  └─ Checks customer's preferred payment method:
+     • Wepay → auto-charge on delivery confirmation
+     • Card → auto-charge with 3D-Secure if needed
+     • Bank transfer → invoice generated
+     • Pay on delivery → driver collects on arrival
+
+T+30min: DELIVERY DISPATCHED
+  └─ Driver en route · Customer receives live tracking link
+
+T+2hr: DELIVERY COMPLETE &amp; PAYMENT PROCESSED
+  └─ Cylinder refilled 100% · Sensor re-attached
+  └─ Payment captured (auto or on-delivery)
+  └─ Digital receipt sent via SMS + email
+  └─ Blockchain record finalized</div>
+      </div>
+    </div>
+
+    <!-- ============ HARDWARE ============ -->
+    <div class="view" id="view-hardware">
+      <div class="page-title">
+        <h1>📡 Hardware Gallery</h1>
+        <div class="pt-sub">Click each card to reveal the actual hardware</div>
+      </div>
+      <div class="section">
+        <h2><span class="ico">📸</span> Sensor Hardware</h2>
+        <div class="grid-3">
+          <div class="card kpi" onclick="toggleHardware('hw-mopeka')">
+            <div class="c-label">LPG Cylinder Sensor</div>
+            <div class="c-value" style="font-size:1.1rem;">Mopeka PRO+ LTE</div>
+            <div class="c-sub">Sonar · ±1% · 5-yr battery · LTE</div>
+            <div class="c-hint">▼ SHOW PHOTO</div>
+            <div class="hardware-photo" id="hw-mopeka">
+              <div style="background:#1e293b;border-radius:10px;padding:30px;text-align:center;">
+                <div style="font-size:3.5rem;margin-bottom:12px;">🔵</div>
+                <div style="color:#5eead4;font-weight:800;font-size:1.1rem;">Mopeka PRO+ LTE</div>
+                <div style="color:#94a3b8;font-size:0.82rem;margin-top:6px;line-height:1.6;">Ultrasonic tank sensor with cellular LTE<br>Magnetically mounts to bottom of cylinder<br>ISO 11439 compatible · $189 per unit</div>
+              </div>
+            </div>
+          </div>
+          <div class="card info" onclick="toggleHardware('hw-alevel')">
+            <div class="c-label">Alternative LPG Sensor</div>
+            <div class="c-value" style="font-size:1.1rem;">ALEVEL 1x5</div>
+            <div class="c-sub">Hall-effect · 15-yr battery</div>
+            <div class="c-hint">▼ SHOW PHOTO</div>
+            <div class="hardware-photo" id="hw-alevel">
+              <div style="background:#1e293b;border-radius:10px;padding:30px;text-align:center;">
+                <div style="font-size:3.5rem;margin-bottom:12px;">📊</div>
+                <div style="color:#7dd3fc;font-weight:800;font-size:1.1rem;">ALEVEL 1x5 (AIUT)</div>
+                <div style="color:#94a3b8;font-size:0.82rem;margin-top:6px;line-height:1.6;">Hall-effect R3D dial sensor<br>LoRaWAN / Sigfox / BLE<br>15-year battery · $150 per unit</div>
+              </div>
+            </div>
+          </div>
+          <div class="card purple" onclick="toggleHardware('hw-gasboard')">
+            <div class="c-label">Biogas Analyzer</div>
+            <div class="c-value" style="font-size:1.1rem;">Gasboard-9060</div>
+            <div class="c-sub">CH₄, CO₂, H₂S, O₂</div>
+            <div class="c-hint">▼ SHOW PHOTO</div>
+            <div class="hardware-photo" id="hw-gasboard">
+              <div style="background:#1e293b;border-radius:10px;padding:30px;text-align:center;">
+                <div style="font-size:3.5rem;margin-bottom:12px;">🏭</div>
+                <div style="color:#c4b5fd;font-weight:800;font-size:1.1rem;">Gasboard-9060</div>
+                <div style="color:#94a3b8;font-size:0.82rem;margin-top:6px;line-height:1.6;">Online biogas monitoring system<br>NDIR + Electrochemical · IP65 · 24/7<br>$6,500 per unit (with sampling)</div>
+              </div>
+            </div>
+          </div>
+          <div class="card info" onclick="toggleHardware('hw-lte')">
+            <div class="c-label">LTE Module</div>
+            <div class="c-value" style="font-size:1.1rem;">Quectel BG96 / Telit</div>
+            <div class="c-sub">Cat-M1 / NB-IoT · Ultra-low power</div>
+            <div class="c-hint">▼ SHOW PHOTO</div>
+            <div class="hardware-photo" id="hw-lte">
+              <div style="background:#1e293b;border-radius:10px;padding:30px;text-align:center;">
+                <div style="font-size:3.5rem;margin-bottom:12px;">📶</div>
+                <div style="color:#7dd3fc;font-weight:800;font-size:1.1rem;">LTE Cat-M1 Module</div>
+                <div style="color:#94a3b8;font-size:0.82rem;margin-top:6px;line-height:1.6;">Embedded in sensor + gateway<br>LTE Cat-M1 / NB-IoT · TLS 1.3<br>Ultra-low power for 5-year operation</div>
+              </div>
+            </div>
+          </div>
+          <div class="card kpi" onclick="toggleHardware('hw-gateway')">
+            <div class="c-label">Edge Gateway</div>
+            <div class="c-value" style="font-size:1.1rem;">ESP32 + LTE</div>
+            <div class="c-sub">MQTT · 30-day buffering</div>
+            <div class="c-hint">▼ SHOW PHOTO</div>
+            <div class="hardware-photo" id="hw-gateway">
+              <div style="background:#1e293b;border-radius:10px;padding:30px;text-align:center;">
+                <div style="font-size:3.5rem;margin-bottom:12px;">🖥️</div>
+                <div style="color:#5eead4;font-weight:800;font-size:1.1rem;">ESP32 Gateway</div>
+                <div style="color:#94a3b8;font-size:0.82rem;margin-top:6px;line-height:1.6;">Edge processing + data transmission<br>MQTT → GCFT · SD card backup<br>$250 per gateway</div>
+              </div>
+            </div>
+          </div>
+          <div class="card admin" onclick="toggleHardware('hw-gcft')">
+            <div class="c-label">Cloud Platform</div>
+            <div class="c-value" style="font-size:1.1rem;">GCFT Global</div>
+            <div class="c-sub">Sovereign dMRV · Blockchain · XBRL</div>
+            <div class="c-hint">▼ SHOW DETAILS</div>
+            <div class="hardware-photo" id="hw-gcft">
+              <div style="background:#1e293b;border-radius:10px;padding:30px;text-align:center;">
+                <div style="font-size:3.5rem;margin-bottom:12px;">☁️</div>
+                <div style="color:#86efac;font-weight:800;font-size:1.1rem;">GCFT Global Platform</div>
+                <div style="color:#94a3b8;font-size:0.82rem;margin-top:6px;line-height:1.6;">Built by OECS AI Institute<br>AI analytics · Blockchain audit · XBRL<br>Now integrates payment gateway</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ USERS GUIDE HOME ============ -->
+    <div class="view" id="view-users-guide">
+      <div class="role-hero">
+        <div class="role-hero-content">
+          <div class="rh-eyebrow">📖 COMPLETE USER GUIDE</div>
+          <h1>Everything You Need to Use<br>the CGI Platform</h1>
+          <p>Choose your role to access a complete, step-by-step guide. Each guide includes setup instructions, daily workflows, troubleshooting, and best practices.</p>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2><span class="ico">👥</span> Select Your Role</h2>
+        <p>Click on any role card to open the complete guide for that user type.</p>
+
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:20px; margin-top:20px;">
+
+          <div class="role-card customer" onclick="switchView('guide-customer')">
+            <div class="rc-icon">🏠</div>
+            <div class="rc-title">Customer Guide</div>
+            <div class="rc-desc">Download the app, pair your sensor, monitor gas levels, receive alerts, order refills, and manage payments — all in one guide.</div>
+            <span class="rc-cta">Open Guide →</span>
+          </div>
+
+          <div class="role-card tech" onclick="switchView('guide-tech')">
+            <div class="rc-icon">🔧</div>
+            <div class="rc-title">Technician Guide</div>
+            <div class="rc-desc">Install Mopeka sensors on LPG cylinders, activate them via the Technician App, and troubleshoot common field issues.</div>
+            <span class="rc-cta">Open Guide →</span>
+          </div>
+
+          <div class="role-card ops" onclick="switchView('guide-ops')">
+            <div class="rc-icon">🚚</div>
+            <div class="rc-title">Operations Guide</div>
+            <div class="rc-desc">Manage fleet, dispatch drivers, review AI-optimised routes, and monitor live deliveries in real time.</div>
+            <span class="rc-cta">Open Guide →</span>
+          </div>
+
+          <div class="role-card admin" onclick="switchView('guide-admin')">
+            <div class="rc-icon">💰</div>
+            <div class="rc-title">Admin Guide</div>
+            <div class="rc-desc">Process payments, reconcile accounts, generate invoices, handle refunds, and support customers.</div>
+            <span class="rc-cta">Open Guide →</span>
+          </div>
+
+          <div class="role-card payment" onclick="switchView('guide-payment')">
+            <div class="rc-icon">💳</div>
+            <div class="rc-title">Payment Guide</div>
+            <div class="rc-desc">Set up Wepay, add bank cards, manage auto-charge preferences, and use pay-on-delivery options.</div>
+            <span class="rc-cta">Open Guide →</span>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="section">
+        <h2><span class="ico">🎬</span> Video Walkthroughs (Interactive Demos)</h2>
+        <p>Want to see how it works in action? These interactive demos play through the complete user journeys:</p>
+        <div class="grid-3">
+          <div class="card customer" onclick="switchView('lpg')">
+            <div class="c-label">▶ PLAY</div>
+            <div class="c-value" style="font-size:1.05rem;">LPG Monitoring Demo</div>
+            <div class="c-sub">4 scenes · Installation → Refill</div>
+          </div>
+          <div class="card payment" onclick="switchView('ordering')">
+            <div class="c-label">▶ PLAY</div>
+            <div class="c-value" style="font-size:1.05rem;">Ordering System Demo</div>
+            <div class="c-sub">6 steps · 5% trigger → Payment</div>
+          </div>
+          <div class="card info" onclick="switchView('payments')">
+            <div class="c-label">▶ PLAY</div>
+            <div class="c-value" style="font-size:1.05rem;">Payment Demo</div>
+            <div class="c-sub">Choose your payment method</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ GUIDE: CUSTOMER ============ -->
+    <div class="view" id="view-guide-customer">
+      <span class="back-link" onclick="switchView('users-guide')">← Back to Guide Home</span>
+      <div class="page-title">
+        <h1>🏠 Customer Guide</h1>
+        <div class="pt-sub">Everything a household or business needs to use the CGI platform</div>
+        <div class="pt-tags">
+          <span class="pt-tag blue">Customer Role</span>
+          <span class="pt-tag accent">Complete Guide</span>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2><span class="ico">📥</span> Step 1 — Download the App</h2>
+        <p>The CGI Customer App is available on iOS and Android.</p>
+        <div class="grid-2">
+          <div class="card customer" onclick="drill('cust-app-ios')">
+            <div class="c-label">iOS Users</div>
+            <div class="c-value" style="font-size:1.1rem;">📱 Apple App Store</div>
+            <div class="c-sub">Search "CGI Gas Monitor" or scan QR code</div>
+            <div class="c-hint">▼</div>
+          </div>
+          <div class="card customer" onclick="drill('cust-app-and')">
+            <div class="c-label">Android Users</div>
+            <div class="c-value" style="font-size:1.1rem;">🤖 Google Play Store</div>
+            <div class="c-sub">Search "CGI Gas Monitor" or scan QR code</div>
+            <div class="c-hint">▼</div>
+          </div>
+        </div>
+        <div class="alert alert-tip">
+          <span class="a-title">💡 No Smartphone?</span>
+          No problem. All alerts are sent via <strong>SMS and WhatsApp</strong>, which work on any mobile phone. You can reply to confirm refill orders without opening the app.
+        </div>
+      </div>
+
+      <div class="section">
+        <h2><span class="ico">✍️</span> Step 2 — Create Your Account</h2>
+        <ol class="steps customer">
+          <li><strong>Open the app</strong> → tap "Create Account"</li>
+          <li><strong>Enter your mobile number</strong> — primary identity</li>
+          <li><strong>Verify via SMS</strong> — 6-digit code</li>
+          <li><strong>Set your PIN</strong> — 4 digits, secures account + payments</li>
+          <li><strong>Add your address</strong> — pin exact location on map</li>
+          <li><strong>Select preferred distributor</strong> — from CGI partner list</li>
+          <li><strong>Add backup contact</strong> — for emergency alerts</li>
+        </ol>
+      </div>
+
+      <div class="section">
+        <h2><span class="ico">🔗</span> Step 3 — Pair Your Sensor</h2>
+        <p>When the CGI technician installs your sensor, they give you a card with a <strong>pairing code</strong>. Here's what to do:</p>
+        <ol class="steps customer">
+          <li><strong>Open the app</strong> → tap "Add Cylinder"</li>
+          <li><strong>Enter the 8-character pairing code</strong></li>
+          <li><strong>Give your cylinder a nickname</strong> — e.g. "Kitchen"</li>
+          <li><strong>Confirm cylinder size</strong> — 20 lb or 100 lb</li>
+          <li><strong>Set alert threshold</strong> — default 5% (auto-order)</li>
+          <li><strong>Tap "Save"</strong> — sensor is paired and live</li>
+        </ol>
+      </div>
+
+      <div class="section">
+        <h2><span class="ico">📊</span> Step 4 — Monitoring Your Gas</h2>
+        <p>The home screen shows:</p>
+        <table>
+          <tr><th>Element</th><th>Meaning</th></tr>
+          <tr><td><strong>Gas Level %</strong></td><td>Current fill percentage, updated every 5 sec</td></tr>
+          <tr><td><strong>Days Remaining</strong></td><td>AI-predicted days until empty</td></tr>
+          <tr><td><strong>Usage Trend</strong></td><td>Weekly consumption vs. baseline</td></tr>
+          <tr><td><strong>Recent Alerts</strong></td><td>Notifications from last 7 days</td></tr>
+        </table>
+      </div>
+
+      <div class="section">
+        <h2><span class="ico">🔔</span> Step 5 — Understanding Alerts</h2>
+        <div class="grid-2">
+          <div class="card customer" onclick="drill('alert-20')">
+            <div class="c-label">🟡 Early Warning</div>
+            <div class="c-value" style="font-size:1.05rem;">20% Level Alert</div>
+            <div class="c-sub">~3 days remaining. Consider ordering.</div>
+            <div class="c-hint">▼</div>
+          </div>
+          <div class="card customer" onclick="drill('alert-5')">
+            <div class="c-label">🔴 Critical</div>
+            <div class="c-value" style="font-size:1.05rem;">5% Auto-Order</div>
+            <div class="c-sub">Auto-order placed · Driver dispatched</div>
+            <div class="c-hint">▼</div>
+          </div>
+          <div class="card customer" onclick="drill('alert-delivery')">
+            <div class="c-label">🚚 Delivery</div>
+            <div class="c-value" style="font-size:1.05rem;">Driver En Route</div>
+            <div class="c-sub">Live tracking available</div>
+            <div class="c-hint">▼</div>
+          </div>
+          <div class="card customer" onclick="drill('alert-anomaly')">
+            <div class="c-label">⚠️ Anomaly</div>
+            <div class="c-value" style="font-size:1.05rem;">Unusual Usage</div>
+            <div class="c-sub">Could indicate a leak</div>
+            <div class="c-hint">▼</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2><span class="ico">🛒</span> Step 6 — Ordering Refills</h2>
+        <p>You can order any time — no need to wait for the 5% trigger:</p>
+        <ol class="steps customer">
+          <li><strong>Tap "Order Now"</strong> on the home screen</li>
+          <li><strong>Choose your cylinder</strong> from paired list</li>
+          <li><strong>Pick a delivery window</strong> — same-day, tomorrow, or scheduled</li>
+          <li><strong>Confirm the price</strong> — shown with any fees</li>
+          <li><strong>Choose payment method</strong> — Wepay, Card, or Pay on Delivery</li>
+          <li><strong>Tap "Place Order"</strong> — SMS + WhatsApp confirmation</li>
+          <li><strong>Track your driver</strong> — live GPS in app</li>
+        </ol>
+      </div>
+
+      <div class="section">
+        <h2><span class="ico">📦</span> Step 7 — What Happens at Delivery</h2>
+        <ol class="steps customer">
+          <li>Driver confirms arrival (notification sent)</li>
+          <li>Driver inspects empty cylinder</li>
+          <li>Cylinder swap (2–3 minutes)</li>
+          <li>Sensor re-attaches to new cylinder</li>
+          <li><strong>Payment processed</strong> — auto-charge or collected</li>
+          <li>Signature or PIN confirms receipt</li>
+          <li>You receive SMS: "Refill delivered. Rate your experience."</li>
+        </ol>
+        <div class="alert alert-success">
+          <span class="a-title">✅ Cylinder Live</span>
+          Within 60 seconds of the swap, your app will show the new cylinder at 100%. The next auto-order will trigger in ~4 weeks.
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ GUIDE: TECHNICIAN ============ -->
+    <div class="view" id="view-guide-tech">
+      <span class="back-link" onclick="switchView('users-guide')">← Back to Guide Home</span>
+      <div class="page-title">
+        <h1>🔧 Technician Guide</h1>
+        <div class="pt-sub">Sensor installation, activation, testing, and troubleshooting</div>
+        <div class="pt-tags">
+          <span class="pt-tag warn">Technician Role</span>
+          <span class="pt-tag accent">Complete Guide</span>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2><span class="ico">🧰</span> The Field Kit — Check Before You Go</h2>
+        <table>
+          <tr><th>Item</th><th>Quantity</th><th>Purpose</th></tr>
+          <tr><td>Mopeka PRO+ LTE Sensor</td><td>1 per cylinder</td><td>Attaches to bottom of cylinder</td></tr>
+          <tr><td>Pairing card</td><td>1 per sensor</td><td>8-char code for app pairing</td></tr>
+          <tr><td>Cleaning cloth + alcohol wipe</td><td>2 each</td><td>Prep magnetic surface</td></tr>
+          <tr><td>Moisture-resistant epoxy (optional)</td><td>Small tube</td><td>For rough bottoms</td></tr>
+          <tr><td>CGI Technician App</td><td>1 smartphone</td><td>Activation + testing</td></tr>
+          <tr><td>Spare CR2032 batteries</td><td>2</td><td>Emergency replacement</td></tr>
+          <tr><td>Safety gloves</td><td>1 pair</td><td>LPG handling</td></tr>
+        </table>
+        <div class="alert alert-warning">
+          <span class="a-title">⚠️ Safety First</span>
+          Never install near an open flame or on a connected cylinder. Confirm valve closed and appliance disconnected.
+        </div>
+      </div>
+
+      <div class="section">
+        <h2><span class="ico">🔧</span> Installation — Step by Step</h2>
+        <ol class="steps tech">
+          <li><strong>Confirm cylinder type &amp; condition</strong> — 20 lb or 100 lb. Inspect bottom. Do NOT install on damaged cylinders.</li>
+          <li><strong>Position the cylinder upright</strong> on a flat, stable surface.</li>
+          <li><strong>Clean the bottom</strong> — cloth + alcohol wipe to remove dirt and oils.</li>
+          <li><strong>Activate the sensor</strong> — peel protective film; twist counterclockwise to unlock, clockwise to activate. Wait for green LED flash.</li>
+          <li><strong>Attach to cylinder bottom</strong> — center, press firmly. You should hear a click.</li>
+          <li><strong>Verify LED sequence</strong> — Blue (booting) → Green (ready) → Green pulse every 30 sec (transmitting).</li>
+          <li><strong>Record the pairing code</strong> in the CGI Technician App.</li>
+          <li><strong>Test reading</strong> — open app → "Read Sensor" → live reading within 30 sec.</li>
+          <li><strong>Hand over pairing card to customer</strong> and explain how to pair in their app.</li>
+        </ol>
+      </div>
+
+      <div class="section">
+        <h2><span class="ico">📱</span> The Technician App</h2>
+        <div class="grid-2">
+          <div class="card tech" onclick="drill('tech-app-1')">
+            <div class="c-label">Feature 1</div>
+            <div class="c-value" style="font-size:1.05rem;">Sensor Diagnostics</div>
+            <div class="c-sub">Live reading · battery · signal strength</div>
+            <div class="c-hint">▼</div>
+          </div>
+          <div class="card tech" onclick="drill('tech-app-2')">
+            <div class="c-label">Feature 2</div>
+            <div class="c-value" style="font-size:1.05rem;">Installation Logging</div>
+            <div class="c-sub">GPS · photo · timestamp · pairing code</div>
+            <div class="c-hint">▼</div>
+          </div>
+          <div class="card tech" onclick="drill('tech-app-3')">
+            <div class="c-label">Feature 3</div>
+            <div class="c-value" style="font-size:1.05rem;">Calibration Tools</div>
+            <div class="c-sub">Reset · force transmit · firmware update</div>
+            <div class="c-hint">▼</div>
+          </div>
+          <div class="card tech" onclick="drill('tech-app-4')">
+            <div class="c-label">Feature 4</div>
+            <div class="c-value" style="font-size:1.05rem;">Support Ticket</div>
+            <div class="c-sub">Direct line to Operations</div>
+            <div class="c-hint">▼</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2><span class="ico">✅</span> Activation Workflow</h2>
+        <ol class="steps tech">
+          <li>Open the Technician App, log in with your credentials</li>
+          <li>Tap "New Installation" — select the customer account</li>
+          <li>Scan the sensor's QR code — links sensor to customer</li>
+          <li>Verify sensor reading — matches expected fill (100%)</li>
+          <li>Check LTE signal strength — 2+ bars required</li>
+          <li>Force initial transmission — "Transmit Now" → confirmation within 30 sec</li>
+          <li>Enter customer details + pairing code</li>
+          <li>Take photos — sensor, cylinder, location</li>
+          <li>Submit — auto-uploads to GCFT with confirmation ticket</li>
+        </ol>
+      </div>
+
+      <div class="section">
+        <h2><span class="ico">🔧</span> Troubleshooting Common Issues</h2>
+        <table>
+          <tr><th>Issue</th><th>Cause</th><th>Fix</th></tr>
+          <tr><td>No LED light</td><td>Dead battery or inactive</td><td>Replace battery; re-activate</td></tr>
+          <tr><td>Red LED flash</td><td>Low battery</td><td>Replace CR2032 battery</td></tr>
+          <tr><td>No LTE signal</td><td>Weak coverage / position</td><td>Move to better location; check SIM</td></tr>
+          <tr><td>Reading shows 0%</td><td>Misaligned sensor</td><td>Remove, reattach, verify contact</td></tr>
+          <tr><td>Reading fluctuates</td><td>Tilted cylinder</td><td>Ensure upright + level surface</td></tr>
+          <tr><td>Pairing code rejected</td><td>Wrong code / already paired</td><td>Verify code; reset via Tech App</td></tr>
+        </table>
+        <div class="alert alert-tip">
+          <span class="a-title">💡 Pro Tip</span>
+          Take before-and-after photos. This protects you if the customer later claims the sensor wasn't installed. Photos auto-upload to GCFT for audit.
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ GUIDE: OPERATIONS ============ -->
+    <div class="view" id="view-guide-ops">
+      <span class="back-link" onclick="switchView('users-guide')">← Back to Guide Home</span>
+      <div class="page-title">
+        <h1>🚚 Operations Guide</h1>
+        <div class="pt-sub">Fleet management, dispatch, and route optimisation</div>
+        <div class="pt-tags">
+          <span class="pt-tag purple">Operations Role</span>
+          <span class="pt-tag accent">Complete Guide</span>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2><span class="ico">📊</span> Your Dashboard at a Glance</h2>
+        <div class="mono-block">╔══════════════════════════════════════════════════════════════════════════════════════╗
+║                    OPERATIONS DASHBOARD — LIVE FLEET STATUS                          ║
+╚══════════════════════════════════════════════════════════════════════════════════════╝
+
+  FLEET SUMMARY
+    Cylinders above 50%    ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓   312
+    Cylinders 20–50%       ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░░░░   128
+    Cylinders below 5%     ▓▓▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░░    28 ← AUTO-ORDER
+    Cylinders offline      ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░     0
+
+  TODAY'S DELIVERIES
+    Total scheduled:       42
+    Completed:             18  (43%)
+    In progress:           12  (29%)
+    Pending assignment:     8  (19%)  ← ACTION NEEDED
+
+  AUTO-ORDER QUEUE (5% TRIGGER)
+    #MB-2847   Mrs. Joseph     Rodney Bay    20 lb    ✓ Driver: John M.
+    #MB-2848   Mr. Baptiste    Gros Islet   100 lb    ✓ Driver: Sarah L.
+    #MB-2849   Hotel Bayview   Rodney Bay   100 lb    ⏳ Unassigned
+    #MB-2850   Mrs. Charles    Cap Estate    20 lb    ⏳ Unassigned
+    #MB-2851   Mr. Fontenelle  Gros Islet    20 lb    ✓ Driver: Mark T.</div>
+      </div>
+
+      <div class="section">
+        <h2><span class="ico">🎯</span> Your Daily Workflow</h2>
+        <ol class="steps ops">
+          <li><strong>Review overnight auto-orders</strong> — first thing in the morning</li>
+          <li><strong>Confirm driver availability</strong> — check who's on shift today</li>
+          <li><strong>Assign orders to drivers</strong> — system suggests nearest</li>
+          <li><strong>Review optimised routes</strong> — accept or adjust AI suggestions</li>
+          <li><strong>Monitor live deliveries</strong> — GPS tracking shows every driver</li>
+          <li><strong>Handle exceptions</strong> — reschedule failed deliveries</li>
+          <li><strong>End-of-day reconciliation</strong> — confirm all deliveries + payments</li>
+          <li><strong>Prepare for tomorrow</strong> — check pending auto-orders</li>
+        </ol>
+      </div>
+
+      <div class="section">
+        <h2><span class="ico">👤</span> Dispatching a Driver</h2>
+        <p>Click on any unassigned auto-order. You'll see:</p>
+        <table>
+          <tr><th>Field</th><th>Content</th></tr>
+          <tr><td><strong>Customer name &amp; address</strong></td><td>From account</td></tr>
+          <tr><td><strong>Cylinder size</strong></td><td>20 lb or 100 lb</td></tr>
+          <tr><td><strong>Requested window</strong></td><td>Same-day or scheduled</td></tr>
+          <tr><td><strong>Payment method</strong></td><td>Pre-paid / Wepay / Card / Pay-on-delivery</td></tr>
+          <tr><td><strong>Nearby drivers</strong></td><td>List with ETA</td></tr>
+          <tr><td><strong>Suggested driver</strong></td><td>AI-suggested based on proximity + load</td></tr>
+          <tr><td><strong>Customer notes</strong></td><td>Gate code, parking, etc.</td></tr>
+        </table>
+        <p><strong>To dispatch:</strong> Click suggested driver → tap "Assign". Driver receives order within seconds.</p>
+      </div>
+
+      <div class="section">
+        <h2><span class="ico">🗺️</span> Route Optimisation</h2>
+        <p>The AI plans optimal routes based on: customer locations · traffic patterns · driver availability · vehicle capacity · delivery windows · fuel costs.</p>
+        <div class="alert alert-success">
+          <span class="a-title">📊 Typical Results</span>
+          <strong>38% reduction</strong> in fuel · <strong>30% faster</strong> deliveries · <strong>65% less</strong> overtime · <strong>95% truck fill rate</strong>
+        </div>
+        <p><strong>You can override any route.</strong> Drag-and-drop to reorder. Mark "must be first/last" for special cases.</p>
+      </div>
+
+      <div class="section">
+        <h2><span class="ico">💳</span> Handling Payments on Delivery</h2>
+        <p>When a driver is dispatched with a "Pay on Delivery" order, they receive the amount due on their tablet. On arrival:</p>
+        <ul class="check-list">
+          <li>Driver swaps cylinder + attaches sensor</li>
+          <li>Driver presents options: cash, card reader, or Wepay on the spot</li>
+          <li>Customer chooses; driver processes payment</li>
+          <li>Receipt auto-generated (SMS + email)</li>
+          <li>Delivery marked complete in the system</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ============ GUIDE: ADMIN ============ -->
+    <div class="view" id="view-guide-admin">
+      <span class="back-link" onclick="switchView('users-guide')">← Back to Guide Home</span>
+      <div class="page-title">
+        <h1>💰 Admin Staff Guide</h1>
+        <div class="pt-sub">Accounting, reconciliation, refunds, and customer support</div>
+        <div class="pt-tags">
+          <span class="pt-tag green">Admin Role</span>
+          <span class="pt-tag accent">Complete Guide</span>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2><span class="ico">📊</span> The Accounting Dashboard</h2>
+        <div class="metric-bar">
+          <div class="metric-item"><div class="mi-value">$48,250</div><div class="mi-label">This Week Revenue</div></div>
+          <div class="metric-divider"></div>
+          <div class="metric-item"><div class="mi-value">412</div><div class="mi-label">Transactions</div></div>
+          <div class="metric-divider"></div>
+          <div class="metric-item"><div class="mi-value">98.4%</div><div class="mi-label">Collection Rate</div></div>
+          <div class="metric-divider"></div>
+          <div class="metric-item"><div class="mi-value">3</div><div class="mi-label">Pending Refunds</div></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2><span class="ico">💳</span> Daily Reconciliation Workflow</h2>
+        <ol class="steps admin">
+          <li><strong>Morning: Review overnight payments</strong> — check auto-charges, flag failures</li>
+          <li><strong>Mid-day: Process pending transactions</strong> — handle failed Wepay, verify card payments, confirm cash receipts from drivers</li>
+          <li><strong>Afternoon: Reconcile delivery data</strong> — match deliveries to payments (auto-match 95%)</li>
+          <li><strong>Handle exceptions</strong> — investigate unmatched transactions</li>
+          <li><strong>End of day: Generate reports</strong> — daily revenue, transactions by method, pending refunds</li>
+        </ol>
+      </div>
+
+      <div class="section">
+        <h2><span class="ico">📋</span> Handling Refunds</h2>
+        <table>
+          <tr><th>Scenario</th><th>Action</th><th>Timeline</th></tr>
+          <tr><td>Customer cancels before dispatch</td><td>Full refund</td><td>Same-day · 1–2 days to post</td></tr>
+          <tr><td>Customer cancels after dispatch</td><td>Partial refund (minus delivery)</td><td>Same-day</td></tr>
+          <tr><td>Duplicate charge</td><td>Full refund of duplicate</td><td>Immediate</td></tr>
+          <tr><td>Failed delivery (driver error)</td><td>Full refund or free redelivery</td><td>Same-day</td></tr>
+          <tr><td>Wepay failure</td><td>Auto-retry twice; notify customer</td><td>24-hr retry cycle</td></tr>
+        </table>
+
+        <h3>How to Process a Refund</h3>
+        <ol class="steps admin">
+          <li>Find the transaction — by customer name, order #, or date</li>
+          <li>Tap "Refund" — system shows original payment method</li>
+          <li>Select refund type — full or partial</li>
+          <li>Enter reason — dropdown of common reasons</li>
+          <li>Confirm — refund initiated</li>
+          <li>System auto-notifies customer via SMS + email</li>
+        </ol>
+      </div>
+
+      <div class="section">
+        <h2><span class="ico">🧾</span> Generating Invoices</h2>
+        <p>Commercial customers require formal invoices for each refill.</p>
+        <ol class="steps admin">
+          <li>Go to <strong>Accounting → Invoices → New</strong></li>
+          <li>Select customer account (marked "Commercial")</li>
+          <li>Confirm delivery details — cylinder size, quantity, date</li>
+          <li>System auto-populates price from contract</li>
+          <li>Add special items (emergency, extended delivery)</li>
+          <li>Generate invoice — sent via email + WhatsApp</li>
+          <li>Record payment when received</li>
+        </ol>
+      </div>
+
+      <div class="section">
+        <h2><span class="ico">🎧</span> Customer Support Best Practices</h2>
+        <div class="grid-3">
+          <div class="card admin" onclick="drill('support-1')">
+            <div class="c-label">Channel 1</div>
+            <div class="c-value" style="font-size:1.05rem;">📱 In-App Chat</div>
+            <div class="c-sub">Preferred · full account context</div>
+            <div class="c-hint">▼</div>
+          </div>
+          <div class="card admin" onclick="drill('support-2')">
+            <div class="c-label">Channel 2</div>
+            <div class="c-value" style="font-size:1.05rem;">💬 WhatsApp Business</div>
+            <div class="c-sub">Fast · media sharing</div>
+            <div class="c-hint">▼</div>
+          </div>
+          <div class="card admin" onclick="drill('support-3')">
+            <div class="c-label">Channel 3</div>
+            <div class="c-value" style="font-size:1.05rem;">📞 Phone Hotline</div>
+            <div class="c-sub">Urgent + elderly customers</div>
+            <div class="c-hint">▼</div>
+          </div>
+        </div>
+        <div class="alert alert-tip">
+          <span class="a-title">💡 Golden Rule</span>
+          Never argue with a customer about sensor accuracy. If they say the reading is wrong, trust them. Verify with a physical check if needed.
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ GUIDE: PAYMENT ============ -->
+    <div class="view" id="view-guide-payment">
+      <span class="back-link" onclick="switchView('users-guide')">← Back to Guide Home</span>
+      <div class="page-title">
+        <h1>💳 Payment Guide</h1>
+        <div class="pt-sub">Wepay, bank cards, bank transfers, and pay-on-delivery</div>
+        <div class="pt-tags">
+          <span class="pt-tag gold">Payment System</span>
+          <span class="pt-tag hot">NEW</span>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2><span class="ico">📱</span> Method 1 — Wepay (Recommended)</h2>
+        <p>Wepay is the Caribbean's most widely used mobile wallet. CGI is fully integrated with Wepay for seamless auto-payments.</p>
+
+        <h3>Setup (One Time)</h3>
+        <ol class="steps payment">
+          <li><strong>Settings → Payment Methods → Add Method</strong></li>
+          <li><strong>Select Wepay</strong> from list</li>
+          <li><strong>Enter your Wepay mobile number</strong></li>
+          <li><strong>Authorise via SMS</strong> — tap link in Wepay message</li>
+          <li><strong>Enter your Wepay PIN</strong> to link accounts</li>
+          <li><strong>Confirmation</strong> — "Wepay linked successfully"</li>
+        </ol>
+
+        <h3>How You Pay</h3>
+        <ul class="check-list">
+          <li>Driver confirms delivery → payment auto-processed</li>
+          <li>You receive Wepay SMS confirming amount ($36 for 20 lb)</li>
+          <li>Receipt emailed + visible in-app under Orders → Receipts</li>
+          <li>If balance insufficient → WhatsApp prompt to top up</li>
+        </ul>
+      </div>
+
+      <div class="section">
+        <h2><span class="ico">💳</span> Method 2 — Bank Cards</h2>
+        <h3>Accepted Cards</h3>
+        <ul class="check-list">
+          <li><strong>Local debit</strong> — Bank of Saint Lucia, RBC, 1st National Bank, CIBC FirstCaribbean</li>
+          <li><strong>International</strong> — Visa, Mastercard, American Express</li>
+          <li><strong>Prepaid</strong> — where supported by issuer</li>
+        </ul>
+        <h3>Setup</h3>
+        <ol class="steps payment">
+          <li>Settings → Payment Methods → Add Method</li>
+          <li>Select "Bank Card"</li>
+          <li>Enter card number, expiry, CVV</li>
+          <li>Verify with $1 charge (immediately refunded)</li>
+          <li>Enter 3D-Secure code if prompted</li>
+          <li>Card saved for future auto-charges</li>
+        </ol>
+        <div class="alert alert-info">
+          <span class="a-title">🔒 Security</span>
+          Card data is never stored on CGI servers. All processing via PCI-DSS compliant gateways. Only tokenised reference is stored.
+        </div>
+      </div>
+
+      <div class="section">
+        <h2><span class="ico">🏦</span> Method 3 — Bank Transfer</h2>
+        <p>For commercial customers (restaurants, hotels) on invoiced orders.</p>
+        <table>
+          <tr><th>Field</th><th>Details</th></tr>
+          <tr><td>Bank</td><td>Bank of Saint Lucia</td></tr>
+          <tr><td>Account name</td><td>Caribbean Gas Intelligence Ltd.</td></tr>
+          <tr><td>Account number</td><td>Provided on the invoice</td></tr>
+          <tr><td>Reference</td><td>Must include invoice number</td></tr>
+          <tr><td>Payment terms</td><td>Net 15 (15 days)</td></tr>
+        </table>
+        <p>Invoices generated on the 1st of each month for previous-month deliveries. Payment within 15 days. Late payments incur 1.5% monthly fee.</p>
+      </div>
+
+      <div class="section">
+        <h2><span class="ico">💵</span> Method 4 — Pay on Delivery</h2>
+        <p>No pre-payment, no card on file — pay the driver when your refill arrives.</p>
+
+        <h3>Enabling Pay on Delivery</h3>
+        <ol class="steps payment">
+          <li>Settings → Payment Methods</li>
+          <li>Toggle "Pay on Delivery" ON</li>
+          <li>Select which cylinders this applies to</li>
+          <li>Optionally add max order value (e.g. under $400 XCD)</li>
+          <li>Save</li>
+        </ol>
+
+        <h3>What the Driver Accepts</h3>
+        <table>
+          <tr><th>Payment Type</th><th>Accepted?</th><th>Notes</th></tr>
+          <tr><td>Cash (EC dollars)</td><td>✅ Yes</td><td>Preferred · exact amount appreciated</td></tr>
+          <tr><td>Cash (US dollars)</td><td>✅ Yes</td><td>Change at daily rate</td></tr>
+          <tr><td>Local debit card</td><td>✅ Yes</td><td>Driver carries reader</td></tr>
+          <tr><td>Credit card</td><td>✅ Yes</td><td>Visa, Mastercard, Amex</td></tr>
+          <tr><td>Wepay on the spot</td><td>✅ Yes</td><td>Driver initiates on tablet</td></tr>
+          <tr><td>Cheque</td><td>❌ No</td><td>Only pre-approved commercial</td></tr>
+        </table>
+
+        <h3>What You'll Receive</h3>
+        <ul class="check-list">
+          <li><strong>Digital receipt</strong> — SMS + email immediately after payment</li>
+          <li><strong>WhatsApp confirmation</strong> — with transaction amount + driver name</li>
+          <li><strong>In-app receipt</strong> — visible under Orders → Receipts</li>
+          <li><strong>Paper receipt</strong> — on request from driver's mobile printer</li>
+        </ul>
+      </div>
+
+      <div class="section">
+        <h2><span class="ico">⚙️</span> Managing Payment Preferences</h2>
+        <table>
+          <tr><th>Preference</th><th>Behaviour</th></tr>
+          <tr><td><strong>Primary</strong></td><td>Used first for all auto-charges</td></tr>
+          <tr><td><strong>Backup</strong></td><td>Used if primary fails</td></tr>
+          <tr><td><strong>Pay on Delivery</strong></td><td>Overrides auto-charge; you pay driver</td></tr>
+        </table>
+        <p>Access any time in <strong>Settings → Payment Methods → Priority Order</strong>.</p>
+      </div>
+
+      <div class="section">
+        <h2><span class="ico">🔄</span> Switching Methods Mid-Order</h2>
+        <table>
+          <tr><th>Timing</th><th>Action</th></tr>
+          <tr><td>Before dispatch</td><td>Change freely in app</td></tr>
+          <tr><td>After dispatch, before arrival</td><td>Change in app; driver auto-notified</td></tr>
+          <tr><td>When driver is at door</td><td>Inform driver; switch on tablet</td></tr>
+          <tr><td>After payment</td><td>Cannot change — contact support</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- ============ FINANCIALS ============ -->
+    <div class="view" id="view-financials">
+      <div class="page-title">
+        <h1>💰 Financial Model</h1>
+      </div>
+      <div class="section">
+        <h2><span class="ico">📊</span> Financial Dashboard</h2>
+        <div class="grid-4">
+          <div class="card kpi" onclick="drill('fin-capex')">
+            <div class="c-label">Pilot CAPEX</div>
+            <div class="c-value">$18,000</div>
+            <div class="c-sub">7 sensors + GCFT setup</div>
+            <div class="c-hint">▼</div>
+          </div>
+          <div class="card info" onclick="drill('fin-opex')">
+            <div class="c-label">Annual OPEX</div>
+            <div class="c-value">$45,000</div>
+            <div class="c-sub">Platform + support</div>
+            <div class="c-hint">▼</div>
+          </div>
+          <div class="card purple" onclick="drill('fin-rev')">
+            <div class="c-label">Revenue (Scale)</div>
+            <div class="c-value">$255,000</div>
+            <div class="c-sub">500 sensors</div>
+            <div class="c-hint">▼</div>
+          </div>
+          <div class="card payment" onclick="drill('fin-pay')">
+            <div class="c-label">Payment Fees</div>
+            <div class="c-value">1.5%</div>
+            <div class="c-sub">Per transaction</div>
+            <div class="c-hint">▼</div>
+          </div>
+        </div>
+      </div>
+      <div class="section">
+        <h2><span class="ico">🚀</span> Scale-Up Path</h2>
+        <table>
+          <tr><th>Scale</th><th>Sensors</th><th>CAPEX</th><th>Revenue</th><th>OPEX</th><th>EBITDA</th><th>Payback</th></tr>
+          <tr><td>Pilot</td><td>7</td><td>$18,000</td><td>$4,500</td><td>$45,000</td><td>($40,500)</td><td>—</td></tr>
+          <tr><td>Growth</td><td>100</td><td>$45,000</td><td>$52,000</td><td>$75,000</td><td>($23,000)</td><td>—</td></tr>
+          <tr><td>Commercial</td><td>500</td><td>$120,000</td><td>$255,000</td><td>$115,000</td><td>$140,000</td><td><strong>1.2 yr</strong></td></tr>
+          <tr class="total-row"><td><strong>National</strong></td><td><strong>2,000</strong></td><td><strong>$400,000</strong></td><td><strong>$980,000</strong></td><td><strong>$280,000</strong></td><td><strong>$700,000</strong></td><td><strong>0.8 yr</strong></td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- ============ BUDGET ============ -->
+    <div class="view" id="view-budget">
+      <div class="page-title">
+        <h1>📋 Grant Budget</h1>
+      </div>
+      <div class="section">
+        <h2><span class="ico">📊</span> Budget Summary</h2>
+        <div class="grid-4">
+          <div class="card kpi" onclick="drill('bud-total')">
+            <div class="c-label">Total Grant</div>
+            <div class="c-value">$40,000</div>
+            <div class="c-sub">At ceiling</div>
+            <div class="c-hint">▼</div>
+          </div>
+          <div class="card info" onclick="drill('bud-suppliers')">
+            <div class="c-label">Suppliers</div>
+            <div class="c-value">2</div>
+            <div class="c-sub">Maximum allowed</div>
+            <div class="c-hint">▼</div>
+          </div>
+          <div class="card purple" onclick="drill('bud-mktg')">
+            <div class="c-label">Marketing</div>
+            <div class="c-value">12.5%</div>
+            <div class="c-sub">Cap: 15%</div>
+            <div class="c-hint">▼</div>
+          </div>
+          <div class="card warn" onclick="drill('bud-equip')">
+            <div class="c-label">Equipment</div>
+            <div class="c-value">20%</div>
+            <div class="c-sub">Cap: 30%</div>
+            <div class="c-hint">▼</div>
+          </div>
+        </div>
+      </div>
+      <div class="section">
+        <h2><span class="ico">📋</span> Service Provider Costs</h2>
+        <table>
+          <tr><th>#</th><th>Activity</th><th>Provider</th><th>Amount</th><th>Months</th></tr>
+          <tr><td>1</td><td><strong>Total solution</strong> — sensors, GCFT, app, SMS/WhatsApp, payment gateway, installation</td><td>Mopeka (with Orbtronics)</td><td>$35,000</td><td>1–5</td></tr>
+          <tr><td>2</td><td><strong>Marketing, research &amp; testing</strong></td><td>Mosaic Ltd.</td><td>$5,000</td><td>3–6</td></tr>
+          <tr class="total-row"><td colspan="3"><strong>TOTAL</strong></td><td><strong>$40,000</strong></td><td></td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- ============ SUPPLIERS ============ -->
+    <div class="view" id="view-suppliers">
+      <div class="page-title">
+        <h1>🔗 Suppliers &amp; Research</h1>
+      </div>
+      <div class="section">
+        <h2><span class="ico">🌟</span> Primary Recommendations</h2>
+        <div class="grid-2">
+          <div class="card kpi" onclick="drill('sup-mopeka')">
+            <div class="c-label">LPG Sensor</div>
+            <div class="c-value" style="font-size:1.05rem;">Mopeka PRO+ LTE</div>
+            <div class="c-sub">±1% · 5-yr battery · $189</div>
+            <div class="c-hint">▼</div>
+          </div>
+          <div class="card info" onclick="drill('sup-cubic')">
+            <div class="c-label">Biogas Analyzer</div>
+            <div class="c-value" style="font-size:1.05rem;">Gasboard-9060</div>
+            <div class="c-sub">CH₄, CO₂, H₂S, O₂</div>
+            <div class="c-hint">▼</div>
+          </div>
+          <div class="card purple" onclick="drill('sup-oecs')">
+            <div class="c-label">GCFT Platform</div>
+            <div class="c-value" style="font-size:1.05rem;">OECS AI Institute</div>
+            <div class="c-sub">Blockchain + XBRL + AI</div>
+            <div class="c-hint">▼</div>
+          </div>
+          <div class="card payment" onclick="drill('sup-sms')">
+            <div class="c-label">Payment + SMS</div>
+            <div class="c-value" style="font-size:1.05rem;">Wepay + Twilio/Meta</div>
+            <div class="c-sub">Mobile payments + messaging</div>
+            <div class="c-hint">▼</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ FAQ ============ -->
+    <div class="view" id="view-faq">
+      <div class="page-title">
+        <h1>❓ Frequently Asked Questions</h1>
+        <div class="pt-sub">Click any question to reveal the answer</div>
+      </div>
+
+      <div class="section">
+        <h2><span class="ico">🏠</span> Customer FAQs</h2>
+        <div class="faq-drill" onclick="toggleFaq(this)">
+          <div class="fd-q">Do I need a smartphone to use CGI?</div>
+          <div class="fd-a">No. All critical alerts are sent via SMS and WhatsApp, which work on any mobile phone. However, the app provides richer analytics and self-service options.</div>
+        </div>
+        <div class="faq-drill" onclick="toggleFaq(this)">
+          <div class="fd-q">Is the Mopeka sensor safe on my cylinder?</div>
+          <div class="fd-a">Yes, completely safe. It attaches magnetically to the OUTSIDE bottom of the cylinder. No drilling, no wiring, no contact with gas. Certified for use in LPG environments.</div>
+        </div>
+        <div class="faq-drill" onclick="toggleFaq(this)">
+          <div class="fd-q">Can I disable auto-ordering?</div>
+          <div class="fd-a">Yes. Open the app → Settings → Auto-Order → toggle off. You'll still get alerts, but you'll need to manually order.</div>
+        </div>
+        <div class="faq-drill" onclick="toggleFaq(this)">
+          <div class="fd-q">Can I use different distributors for different cylinders?</div>
+          <div class="fd-a">Yes. In Settings → Preferred Distributor, you can assign different suppliers to each cylinder paired to your account.</div>
+        </div>
+        <div class="faq-drill" onclick="toggleFaq(this)">
+          <div class="fd-q">What happens if my Wepay balance is too low?</div>
+          <div class="fd-a">If a Wepay charge fails, the system automatically retries twice. If still failing, you'll get a WhatsApp prompt to top up. Meanwhile, the delivery goes ahead and you can pay cash on arrival.</div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2><span class="ico">🔧</span> Technician FAQs</h2>
+        <div class="faq-drill" onclick="toggleFaq(this)">
+          <div class="fd-q">What if the cylinder has a rusted bottom?</div>
+          <div class="fd-a">Use moisture-resistant epoxy on the clean surface before attaching the sensor. If the cylinder is structurally compromised, do NOT install — report to Operations for a replacement.</div>
+        </div>
+        <div class="faq-drill" onclick="toggleFaq(this)">
+          <div class="fd-q">How long does the Mopeka sensor last?</div>
+          <div class="fd-a">5-year battery life with normal use. The sensor itself is expected to function 10+ years. Standard CR2032 battery.</div>
+        </div>
+        <div class="faq-drill" onclick="toggleFaq(this)">
+          <div class="fd-q">Do I need to configure Wi-Fi?</div>
+          <div class="fd-a">No. The sensor uses cellular LTE Cat-M1 directly. No Wi-Fi setup needed. It works anywhere with LTE coverage.</div>
+        </div>
+        <div class="faq-drill" onclick="toggleFaq(this)">
+          <div class="fd-q">What if the customer refuses installation?</div>
+          <div class="fd-a">Log the refusal in the Technician App ("Customer Refused"), take a photo of the cylinder or door, and contact your supervisor. Never install without documented consent.</div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2><span class="ico">🚚</span> Operations FAQs</h2>
+        <div class="faq-drill" onclick="toggleFaq(this)">
+          <div class="fd-q">Can I override the AI route suggestion?</div>
+          <div class="fd-a">Yes. Drag-and-drop the delivery sequence. Mark stops as "must be first" or "last". The AI re-optimises around your constraints.</div>
+        </div>
+        <div class="faq-drill" onclick="toggleFaq(this)">
+          <div class="fd-q">What if a driver becomes unavailable mid-shift?</div>
+          <div class="fd-a">The system shows alternative drivers with estimated arrival times. One tap reassigns the order. Drivers are auto-notified.</div>
+        </div>
+        <div class="faq-drill" onclick="toggleFaq(this)">
+          <div class="fd-q">How do I handle failed deliveries?</div>
+          <div class="fd-a">Mark as "Failed — Rescheduled" and select a new window. Customer receives SMS explaining the change and can respond to confirm.</div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2><span class="ico">💰</span> Admin FAQs</h2>
+        <div class="faq-drill" onclick="toggleFaq(this)">
+          <div class="fd-q">How long do refunds take?</div>
+          <div class="fd-a">Wepay refunds: under 24 hours. Card refunds: 3–5 business days depending on issuing bank. Refunds initiated before 3 PM typically credit same day.</div>
+        </div>
+        <div class="faq-drill" onclick="toggleFaq(this)">
+          <div class="fd-q">How do I verify a disputed charge?</div>
+          <div class="fd-a">Check the blockchain ledger. Every transaction is logged with an immutable hash. From Accounting, tap "Verify" on any transaction to see the original record with timestamps, GPS, and sensor data.</div>
+        </div>
+        <div class="faq-drill" onclick="toggleFaq(this)">
+          <div class="fd-q">Can I generate custom reports?</div>
+          <div class="fd-a">Yes. Accounting → Reports → select date range, filters, format (Excel or PDF). Reports include revenue, transactions, refunds, and reconciliation status.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ SUPPORT ============ -->
+    <div class="view" id="view-support">
+      <div class="page-title">
+        <h1>🆘 Support &amp; Contact</h1>
+      </div>
+      <div class="section">
+        <h2><span class="ico">📞</span> Contact Channels</h2>
+        <div class="grid-2">
+          <div class="card" onclick="drill('contact-1')">
+            <div class="c-label">Customer Support</div>
+            <div class="c-value" style="font-size:1.05rem;">📱 +1 (758) 555-0100</div>
+            <div class="c-sub">Mon–Sat, 7 AM – 9 PM (AST)</div>
+            <div class="c-hint">▼</div>
+          </div>
+          <div class="card" onclick="drill('contact-2')">
+            <div class="c-label">Technical Support</div>
+            <div class="c-value" style="font-size:1.05rem;">📧 tech@cgiplatform.com</div>
+            <div class="c-sub">Sensor + connectivity + dashboard</div>
+            <div class="c-hint">▼</div>
+          </div>
+          <div class="card danger" onclick="drill('contact-3')">
+            <div class="c-label">Emergency 24/7</div>
+            <div class="c-value" style="font-size:1.05rem;">🚨 +1 (758) 555-0911</div>
+            <div class="c-sub">Gas leak · safety concern</div>
+            <div class="c-hint">▼</div>
+          </div>
+          <div class="card success" onclick="drill('contact-4')">
+            <div class="c-label">WhatsApp Business</div>
+            <div class="c-value" style="font-size:1.05rem;">💬 +1 (758) 555-0100</div>
+            <div class="c-sub">Fastest response for non-urgent</div>
+            <div class="c-hint">▼</div>
+          </div>
+        </div>
+      </div>
+      <div class="section">
+        <h2><span class="ico">📅</span> Response Times</h2>
+        <table>
+          <tr><th>Channel</th><th>Response</th><th>Resolution</th></tr>
+          <tr><td>In-app chat</td><td>Under 15 min</td><td>Under 4 hours</td></tr>
+          <tr><td>WhatsApp</td><td>Under 30 min</td><td>Under 6 hours</td></tr>
+          <tr><td>Phone</td><td>Immediate</td><td>Same day</td></tr>
+          <tr><td>Email</td><td>Under 4 hours</td><td>Under 24 hours</td></tr>
+          <tr><td>Emergency</td><td>Immediate</td><td>Under 90 min</td></tr>
+        </table>
+      </div>
+      <div class="section">
+        <h2><span class="ico">🌿</span> About CGI</h2>
+        <p>CGI is a division of OECS Trading Ltd., a Saint Lucian company founded to bring digital innovation to Caribbean energy infrastructure. Platform powered by GCFT sovereign dMRV (OECS AI Institute), Mopeka sensors, Wepay payments, and local Caribbean software engineering.</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="reviewModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>🔍 Review Checklist</h3>
+      <button class="modal-close" onclick="closeReview()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="review-item">
+        <span class="ri-ico">✅</span>
+        <div class="ri-content">
+          <div class="ri-title">Payment System Added</div>
+          <div class="ri-desc">4 methods (Wepay, Card, Bank Transfer, Pay on Delivery) with dedicated view, interactive demo, and complete guide.</div>
+        </div>
+        <span class="ri-status ri-pass">Complete</span>
+      </div>
+      <div class="review-item">
+        <span class="ri-ico">✅</span>
+        <div class="ri-content">
+          <div class="ri-title">User Guide Tab with 5 Role Cards</div>
+          <div class="ri-desc">Guide Home with clickable role cards (Customer, Technician, Operations, Admin, Payment). Each opens a complete, drillable guide.</div>
+        </div>
+        <span class="ri-status ri-pass">Complete</span>
+      </div>
+      <div class="review-item">
+        <span class="ri-ico">✅</span>
+        <div class="ri-content">
+          <div class="ri-title">Play Animations Retained</div>
+          <div class="ri-desc">LPG monitoring demo (4 scenes) and Ordering system demo (6 steps) both fully functional with play/pause/reset. Payment demo also added.</div>
+        </div>
+        <span class="ri-status ri-pass">Complete</span>
+      </div>
+      <div class="review-item">
+        <span class="ri-ico">✅</span>
+        <div class="ri-content">
+          <div class="ri-title">All Cards Clickable &amp; Drillable</div>
+          <div class="ri-desc">Every card across every view expands to reveal detailed content. Flow steps, KPIs, and role cards all interactive.</div>
+        </div>
+        <span class="ri-status ri-pass">Complete</span>
+      </div>
+      <div class="review-item">
+        <span class="ri-ico">📋</span>
+        <div class="ri-content">
+          <div class="ri-title">Reference</div>
+          <div class="ri-desc">Version 4 · October 2026 · Platform + User Guide combined. Ready for print and PDF export.</div>
+        </div>
+        <span class="ri-status ri-info">Info</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ===== VIEW TITLES =====
+  var VIEW_TITLES = {
+    'dashboard': ['Dashboard', '/ Executive Summary'],
+    'concept': ['Concept Note', '/ Project Rationale'],
+    'location': ['Location Analysis', '/ Gros Islet / Rodney Bay'],
+    'lpg': ['LPG Monitoring', '/ Module 1 — Animated Demo'],
+    'biogas': ['Biogas Monitoring', '/ Module 2 — Digester'],
+    'ordering': ['Ordering System', '/ SMS / WhatsApp Revolution'],
+    'payments': ['Payment System', '/ Wepay · Cards · Pay on Delivery'],
+    'impact': ['Industry Impact', '/ The Revolution'],
+    'app': ['Customer App', '/ Household Interface'],
+    'distributor': ['Distributor Dashboard', '/ Fleet & Auto-Orders'],
+    'operator': ['Biogas Operator Dashboard', '/ Production & Carbon'],
+    'visuals': ['Visual Workflows', '/ Colorful Flowcharts'],
+    'architecture': ['System Architecture', '/ Full Stack'],
+    'workflows': ['Operational Workflows', '/ Auto-Order'],
+    'hardware': ['Hardware Gallery', '/ Sensor & LTE Photos'],
+    'users-guide': ['User Guide', '/ Choose Your Role'],
+    'guide-customer': ['Customer Guide', '/ Complete Step-by-Step'],
+    'guide-tech': ['Technician Guide', '/ Installation & Testing'],
+    'guide-ops': ['Operations Guide', '/ Fleet & Routes'],
+    'guide-admin': ['Admin Guide', '/ Accounting & Support'],
+    'guide-payment': ['Payment Guide', '/ 4 Methods Explained'],
+    'financials': ['Financial Model', '/ CAPEX · OPEX · ROI'],
+    'budget': ['Grant Budget', '/ Bridge for Billions'],
+    'suppliers': ['Suppliers & Research', '/ Sensors & Integration'],
+    'faq': ['FAQs', '/ Reference'],
+    'support': ['Support & Contact', '/ Reference']
+  };
+
+  function switchView(viewId) {
+    document.querySelectorAll('.sb-item').forEach(function(i) {
+      i.classList.toggle('active', i.getAttribute('data-view') === viewId);
+    });
+    document.querySelectorAll('.view').forEach(function(v) {
+      v.classList.toggle('active', v.id === 'view-' + viewId);
+    });
+    var t = VIEW_TITLES[viewId] || [viewId, ''];
+    document.getElementById('tbTitle').textContent = t[0];
+    document.getElementById('tbCrumb').textContent = t[1];
+    window.scrollTo({top:0, behavior:'smooth'});
+    if (window.innerWidth <= 800) {
+      document.getElementById('sidebar').classList.remove('open');
+    }
+  }
+
+  document.querySelectorAll('.sb-item').forEach(function(item) {
+    item.addEventListener('click', function() {
+      switchView(this.getAttribute('data-view'));
+    });
+  });
+
+  // ===== DRILL CONTENT =====
+  var drillContent = {
+    'mod-lpg': '<h4>Module 1 — LPG Monitoring</h4><p>Deploys 6 Mopeka PRO+ LTE sensors on standard 20 lb and 100 lb LPG cylinders. Real-time level tracking with ±1% accuracy. Users see their gas level any time on the mobile app. Auto-triggers order at 5%.</p>',
+    'mod-biogas': '<h4>Module 2 — Biogas Monitoring</h4><p>Deploys 1 biogas monitoring kit on an existing digester. Continuous CH₄, pressure, temperature, flow, H₂S monitoring. Produces dMRV-grade data for Gold Standard carbon credits.</p>',
+    'mod-ordering': '<h4>Module 3 — Auto-Ordering 🔥</h4><p>Revolutionary auto-ordering feature. When any monitored cylinder hits 5%, the system automatically dispatches SMS + WhatsApp to both the user and their preferred distributor. Zero user effort. Zero runouts.</p>',
+    'flow-sensor': '<h4>Sensors</h4><p>LPG: Mopeka PRO+ LTE (×6). Biogas: NDIR CH₄, pressure, temp, flow, H₂S.</p>',
+    'flow-lte': '<h4>LTE Connectivity</h4><p>Cat-M1 wide-area. 30-day local buffering. TLS 1.3 security.</p>',
+    'flow-gcft': '<h4>GCFT Platform</h4><p>Data ingestion, AI analytics, blockchain audit, XBRL reporting, payment gateway integration.</p>',
+    'flow-analytics': '<h4>Analytics Engine</h4><p>Runout prediction. Anomaly detection. AI maintenance.</p>',
+    'flow-app': '<h4>Customer App</h4><p>Level, alerts, auto-order tracking, delivery ETA, payment management.</p>',
+    'flow-credits': '<h4>SMS / WhatsApp</h4><p>Auto-order dispatch. Distributor notification. Two-way confirmation.</p>',
+    'flow-payment': '<h4>Payment</h4><p>Wepay · Card · Bank Transfer · Pay on Delivery. Auto-processed or collected by driver.</p>',
+    'cn-obj1': '<h4>Objective 1 — Deploy 6 LPG Sensors</h4><p>Real-time level monitoring on 20 lb and 100 lb cylinders.</p>',
+    'cn-obj2': '<h4>Objective 2 — Deploy 1 Biogas Kit</h4><p>Continuous monitoring on an existing digester.</p>',
+    'cn-obj3': '<h4>Objective 3 — GCFT Integration</h4><p>Blockchain audit, XBRL reporting, AI analytics — all integrated.</p>',
+    'cn-obj4': '<h4>Objective 4 — Auto-Ordering + Payments 🔥</h4><p>5% trigger dispatches SMS + WhatsApp; 4 payment methods available.</p>',
+    'loc-deglos': '<h4>Deglos Landfill</h4><p>5,500 t/month. 50% organic.</p>',
+    'loc-hotels': '<h4>12+ Hotels</h4><p>Rodney Bay corridor. High LPG demand.</p>',
+    'loc-lpg': '<h4>Dense LPG Users</h4><p>Affluent corridor for early adopters.</p>',
+    'loc-biogas': '<h4>Partner Biogas Sites</h4><p>SALCC + operators available.</p>',
+    'lpg-mopeka': '<h4>Mopeka PRO+ LTE</h4><p>±1% sonar accuracy. 5-year battery. LTE Cat-M1. $189.</p>',
+    'lpg-alevel': '<h4>ALEVEL 1x5</h4><p>±2–5%. 15-year battery. LoRaWAN/BLE. $150.</p>',
+    'lpg-linktra': '<h4>Ragasco Linktra</h4><p>3% accuracy. Factory-integrated.</p>',
+    'dist-fleet': '<h4>Fleet View</h4><p>500 cylinders monitored in real time.</p>',
+    'dist-route': '<h4>Route Optimisation</h4><p>38% fuel savings. 65% overtime reduction.</p>',
+    'dist-auto': '<h4>Auto-Orders Today — 28</h4><p>All triggered at 5%. Zero manual intervention.</p>',
+    'dist-pay': '<h4>Payments Collected</h4><p>$4,120 today via Wepay + Cash on Delivery.</p>',
+    'op-production': '<h4>Production Tracking</h4><p>4.5 m³/day biogas. 62% CH₄. 33°C. All within target.</p>',
+    'op-carbon': '<h4>Carbon Credits</h4><p>12 tCO₂e/year verified. 8,640 blockchain records.</p>',
+    'op-maintenance': '<h4>Predictive Maintenance</h4><p>AI detected temperature drop. Actionable recommendation issued.</p>',
+    'app-screen1': '<h4>Home Screen</h4><p>Gas level 68%. Estimated 12 days remaining.</p>',
+    'app-screen2': '<h4>Runout Alert</h4><p>5% triggered. Auto-order sent. Delivery ETA visible.</p>',
+    'app-screen-pay': '<h4>Payment Screen</h4><p>Choose: Wepay, Bank Card, or Pay on Delivery. Change any time.</p>',
+    'app-screen4': '<h4>Order Tracking</h4><p>Live driver location. ETA 4:30 PM.</p>',
+    'fin-capex': '<h4>Pilot CAPEX — $18,000</h4><p>7 sensors + GCFT setup + installation.</p>',
+    'fin-opex': '<h4>Annual OPEX — $45,000</h4><p>Platform + support + LTE + maintenance.</p>',
+    'fin-rev': '<h4>Revenue — $255,000</h4><p>Subscriptions + distributor fees + biogas monitoring + carbon + data licensing.</p>',
+    'fin-pay': '<h4>Payment Processing Fees</h4><p>1.5% per transaction. Wepay fees: $0.30–$0.50. Card fees absorbed by CGI.</p>',
+    'bud-total': '<h4>$40,000 At Ceiling</h4><p>Compliant on all dimensions.</p>',
+    'bud-suppliers': '<h4>2 Suppliers</h4><p>Total solution provider + marketing agency.</p>',
+    'bud-mktg': '<h4>12.5% Marketing</h4><p>Under 15% cap.</p>',
+    'bud-equip': '<h4>20% Equipment</h4><p>Under 30% cap.</p>',
+    'sup-mopeka': '<h4>Mopeka PRO+ LTE</h4><p>Sonar. ±1%. 5-year battery. $189.</p>',
+    'sup-cubic': '<h4>Gasboard-9060</h4><p>NDIR + electrochemical. CDM-proven.</p>',
+    'sup-oecs': '<h4>OECS AI Institute</h4><p>GCFT platform owner.</p>',
+    'sup-sms': '<h4>Wepay + Twilio/Meta</h4><p>Mobile payments + global messaging. Two-way SMS + WhatsApp.</p>',
+    // Customer guide
+    'cust-app-ios': '<h4>iOS Download</h4><p>Open App Store, search "CGI Gas Monitor", tap "Get". Requires iOS 14+. 42 MB. 2-min onboarding video included.</p>',
+    'cust-app-and': '<h4>Android Download</h4><p>Open Google Play, search "CGI Gas Monitor", tap "Install". Requires Android 8+. 38 MB. Enable push notifications.</p>',
+    'alert-20': '<h4>🟡 20% Early Warning</h4><p>Sent at 20% capacity (~3 days remaining). You can pre-order or wait for auto-order at 5%. No action required.</p>',
+    'alert-5': '<h4>🔴 5% Critical Alert</h4><p>Sent at 5%. Auto-order placed. Driver arrives within 2–6 hours (or 90 min for emergency).</p>',
+    'alert-delivery': '<h4>🚚 Delivery Update</h4><p>Sent when driver is dispatched. Includes driver name + live tracking link.</p>',
+    'alert-anomaly': '<h4>⚠️ Anomaly Alert</h4><p>Sent when unusual gas consumption detected. Could indicate a leak. Check appliances and contact support.</p>',
+    // Tech
+    'tech-app-1': '<h4>Sensor Diagnostics</h4><p>Live reading, battery %, LTE signal strength, last transmission, error codes.</p>',
+    'tech-app-2': '<h4>Installation Logging</h4><p>GPS, photo, timestamp, customer, cylinder serial, pairing code, technician ID.</p>',
+    'tech-app-3': '<h4>Calibration Tools</h4><p>Reset, recalibrate, force transmit, firmware update.</p>',
+    'tech-app-4': '<h4>Support Ticket</h4><p>Direct chat with Operations. Auto-attaches diagnostic data.</p>',
+    // Payment
+    'pay-wepay': '<h4>📱 Wepay Integration</h4><p>Caribbean mobile wallet. Auto-charge on delivery. Setup: enter mobile number + authorise via SMS + enter PIN. No card needed. Transaction fees: $0.30–$0.50.</p>',
+    'pay-card': '<h4>💳 Bank Cards</h4><p>Visa, Mastercard, Amex, local debit cards. Setup: enter card + verify with $1 charge. 3D-Secure for first charge. PCI-DSS compliant. Tokenised storage.</p>',
+    'pay-bank': '<h4>🏦 Bank Transfer</h4><p>For commercial accounts. Net 15 terms. Invoices issued monthly. Late payments incur 1.5%/month fee. Bank of Saint Lucia account.</p>',
+    'pay-delivery': '<h4>💵 Pay on Delivery</h4><p>Cash, card, or Wepay at the door. Perfect for customers without mobile wallets or cards. No pre-payment. Digital receipt sent instantly.</p>',
+    'card-local': '<h4>Local Debit Cards</h4><p>Bank of Saint Lucia · RBC · 1st National Bank · CIBC FirstCaribbean. Processed via local gateway. No additional customer fees.</p>',
+    'card-intl': '<h4>International Cards</h4><p>Visa · Mastercard · American Express. 3D-Secure authentication. PCI-DSS compliant processing.</p>',
+    // Pay on delivery flow
+    'pod-1': '<h4>Step 1 — Order Placed</h4><p>You or auto-order system places the refill. Profile indicates "Pay on Delivery".</p>',
+    'pod-2': '<h4>Step 2 — Driver Notified</h4><p>Driver receives order with note: "Collect payment on arrival."</p>',
+    'pod-3': '<h4>Step 3 — Driver Arrives</h4><p>Swap cylinder, re-attach sensor, present payment options.</p>',
+    'pod-4': '<h4>Step 4 — You Pay</h4><p>Choose cash, card, or Wepay on the spot. Exact amount appreciated.</p>',
+    'pod-5': '<h4>Step 5 — Confirmed</h4><p>Payment logged. Digital receipt sent. Next auto-order in ~4 weeks.</p>',
+    // Support
+    'support-1': '<h4>In-App Chat</h4><p>Preferred channel. Agents see full context. Response <15 min.</p>',
+    'support-2': '<h4>WhatsApp Business</h4><p>Fast, supports photos. Response <30 min.</p>',
+    'support-3': '<h4>Phone Hotline</h4><p>For urgent issues + elderly customers. Mon–Sat 7 AM – 9 PM.</p>',
+    // Contact
+    'contact-1': '<h4>Customer Support</h4><p>+1 (758) 555-0100 · Mon–Sat 7 AM – 9 PM.</p>',
+    'contact-2': '<h4>Technical Support</h4><p>tech@cgiplatform.com · Response <4 hours.</p>',
+    'contact-3': '<h4>Emergency 24/7</h4><p>+1 (758) 555-0911 · Gas leaks · Safety concerns.</p>',
+    'contact-4': '<h4>WhatsApp Business</h4><p>+1 (758) 555-0100 · Response <30 min · Media sharing supported.</p>'
+  };
+
+  function drill(panelId) {
+    var allCards = document.querySelectorAll('.card, .flow-step');
+    var target = null;
+    allCards.forEach(function(c) {
+      var oc = c.getAttribute('onclick') || '';
+      if (oc.indexOf("'" + panelId + "'") > -1) { target = c; }
+    });
+    if (!target) return;
+    var existing = document.getElementById('panel-' + panelId);
+    if (existing) { existing.classList.toggle('open'); return; }
+    var panel = document.createElement('div');
+    panel.id = 'panel-' + panelId;
+    panel.className = 'drill-panel open';
+    panel.innerHTML = drillContent[panelId] || '<h4>Detail</h4><p>No additional detail available.</p>';
+    var parent = target.parentNode;
+    if (parent.classList.contains('grid-2') || parent.classList.contains('grid-3') ||
+        parent.classList.contains('grid-4') || parent.classList.contains('flow')) {
+      parent.appendChild(panel);
+    } else {
+      target.parentNode.insertBefore(panel, target.nextSibling);
+    }
+  }
+
+  function toggleHardware(id) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.classList.toggle('open');
+    var hint = el.parentNode.querySelector('.c-hint');
+    if (hint) hint.textContent = el.classList.contains('open') ? '▲ HIDE PHOTO' : '▼ SHOW PHOTO';
+  }
+
+  function toggleFaq(el) {
+    el.classList.toggle('open');
+  }
+
+  function expandAll() {
+    var anyOpen = document.querySelectorAll('.drill-panel.open').length > 0;
+    var btn = document.querySelector('.tb-btn.primary');
+    if (anyOpen) {
+      document.querySelectorAll('.drill-panel').forEach(function(p) { p.remove(); });
+      btn.innerHTML = '⬇️ Expand All';
+    } else {
+      var activeView = document.querySelector('.view.active');
+      if (!activeView) return;
+      var viewCards = activeView.querySelectorAll('.card[onclick]');
+      viewCards.forEach(function(c) {
+        var oc = c.getAttribute('onclick') || '';
+        var match = oc.match(/'([^']+)'/);
+        if (match && drillContent[match[1]]) drill(match[1]);
+      });
+      btn.innerHTML = '⬆️ Collapse All';
+    }
+  }
+
+  // ===== LPG DEMO PLAYER (retained) =====
+  var demoScenes = [1,2,3,4];
+  var currentScene = 1;
+  var demoTimer = null;
+  var demoPlaying = false;
+
+  function showScene(n) {
+    document.querySelectorAll('#demoStage .anim-scene').forEach(function(s) {
+      s.classList.toggle('active', parseInt(s.getAttribute('data-scene')) === n);
+    });
+    document.querySelectorAll('#demoStage .prog-dot').forEach(function(p) {
+      var pn = parseInt(p.getAttribute('data-prog'));
+      p.classList.toggle('active', pn === n);
+      p.classList.toggle('done', pn < n);
+    });
+  }
+
+  function togglePlay() {
+    var btn = document.getElementById('playBtn');
+    if (!btn) return;
+    if (demoPlaying) {
+      clearInterval(demoTimer);
+      demoPlaying = false;
+      btn.innerHTML = '▶ Play';
+      btn.classList.remove('playing');
+    } else {
+      demoPlaying = true;
+      btn.innerHTML = '⏸ Pause';
+      btn.classList.add('playing');
+      demoTimer = setInterval(function() {
+        currentScene = currentScene >= 4 ? 1 : currentScene + 1;
+        showScene(currentScene);
+      }, 3500);
+    }
+  }
+
+  function resetDemo() {
+    clearInterval(demoTimer);
+    demoPlaying = false;
+    var btn = document.getElementById('playBtn');
+    if (btn) { btn.innerHTML = '▶ Play'; btn.classList.remove('playing'); }
+    currentScene = 1;
+    showScene(1);
+  }
+
+  // ===== ORDER DEMO PLAYER (retained) =====
+  var orderPlaying = false;
+  var orderTimer = null;
+
+  function resetOrderDemo() {
+    clearInterval(orderTimer);
+    orderPlaying = false;
+    var btn = document.getElementById('orderPlayBtn');
+    if (btn) { btn.innerHTML = '▶ Play Order Flow'; btn.classList.remove('playing'); }
+    var lvl = document.getElementById('orderLevel');
+    if (lvl) { lvl.textContent = '80%'; lvl.style.color = '#5eead4'; }
+    var st = document.getElementById('orderStatus');
+    if (st) st.textContent = 'Monitoring in real time...';
+    var msgs = document.getElementById('orderMessages');
+    if (msgs) msgs.innerHTML = '';
+    var imp = document.getElementById('orderImpact');
+    if (imp) imp.innerHTML = 'Click <strong style="color:#5eead4;">▶ Play Order Flow</strong> to see the system in action.';
+    document.querySelectorAll('.order-step').forEach(function(s) { s.classList.remove('activated'); });
+    document.querySelectorAll('.order-arrow').forEach(function(a) { a.classList.remove('activated'); });
+  }
+
+  function toggleOrderDemo() {
+    var btn = document.getElementById('orderPlayBtn');
+    if (!btn) return;
+    if (orderPlaying) {
+      clearInterval(orderTimer);
+      orderPlaying = false;
+      btn.innerHTML = '▶ Play Order Flow';
+      btn.classList.remove('playing');
+      return;
+    }
+    resetOrderDemo();
+    orderPlaying = true;
+    btn.innerHTML = '⏸ Playing...';
+    btn.classList.add('playing');
+
+    var steps = [
+      function() {
+        document.getElementById('orderLevel').textContent = '15%';
+        document.getElementById('orderLevel').style.color = '#fbbf24';
+        document.getElementById('orderStatus').textContent = 'Cylinder approaching threshold...';
+        document.getElementById('orderStep1').classList.add('activated');
+        document.querySelectorAll('.order-arrow')[0].classList.add('activated');
+        document.getElementById('orderMessages').innerHTML = '<div class="notif sms"><div class="notif-header">📊 Monitoring</div><div class="notif-body">Gas level dropping. Approaching 5% threshold.</div></div>';
+      },
+      function() {
+        document.getElementById('orderLevel').textContent = '5%';
+        document.getElementById('orderLevel').style.color = '#fca5a5';
+        document.getElementById('orderStatus').textContent = '⚠️ Threshold reached — dispatching alert!';
+        document.getElementById('orderStep2').classList.add('activated');
+        document.querySelectorAll('.order-arrow')[1].classList.add('activated');
+        document.getElementById('orderMessages').innerHTML += '<div class="notif alert-notif"><div class="notif-header">⚠️ LOW GAS</div><div class="notif-body"><strong>5% remaining.</strong> Auto-order created.</div></div>';
+      },
+      function() {
+        document.getElementById('orderStatus').textContent = '☁️ GCFT analyzing and dispatching...';
+        document.getElementById('orderStep3').classList.add('activated');
+        document.querySelectorAll('.order-arrow')[2].classList.add('activated');
+        document.getElementById('orderMessages').innerHTML += '<div class="notif sms"><div class="notif-header">☁️ GCFT Cloud</div><div class="notif-body">Threshold detected. Order #MB-2847 created.</div></div>';
+      },
+      function() {
+        document.getElementById('orderStatus').textContent = '📲 SMS + WhatsApp dispatched!';
+        document.getElementById('orderStep4').classList.add('activated');
+        document.querySelectorAll('.order-arrow')[3].classList.add('activated');
+        document.getElementById('orderMessages').innerHTML += '<div class="notif wa"><div class="notif-header">💬 WhatsApp — Massy Gas</div><div class="notif-body"><strong>New order!</strong> Mrs. Joseph, Rodney Bay</div></div>';
+        document.getElementById('orderMessages').innerHTML += '<div class="notif sms"><div class="notif-header">📲 SMS</div><div class="notif-body">Order #MB-2847 confirmed. ETA 5 PM.</div></div>';
+      },
+      function() {
+        document.getElementById('orderStatus').textContent = '💳 Payment processed via Wepay';
+        document.getElementById('orderStep5').classList.add('activated');
+        document.querySelectorAll('.order-arrow')[4].classList.add('activated');
+        document.getElementById('orderMessages').innerHTML += '<div class="notif pay-notif"><div class="notif-header">💳 Wepay Charge</div><div class="notif-body">$36.00 auto-charged on delivery confirmation</div></div>';
+        document.getElementById('orderImpact').innerHTML = '<div style="color:#5eead4;font-weight:800;margin-bottom:8px;">✅ Order Complete</div><div style="color:#94a3b8;font-size:0.88rem;line-height:1.8;">• Zero customer effort<br>• Auto-detected at 5%<br>• SMS + WhatsApp dispatched<br>• Payment auto-processed<br>• Blockchain record created</div>';
+      },
+      function() {
+        document.getElementById('orderLevel').textContent = '100%';
+        document.getElementById('orderLevel').style.color = '#5eead4';
+        document.getElementById('orderStatus').textContent = '✓ Refilled & Paid!';
+        document.getElementById('orderMessages').innerHTML += '<div class="notif success-notif"><div class="notif-header">✓ Complete</div><div class="notif-body">Cylinder refilled 100%. Payment confirmed.</div></div>';
+        clearInterval(orderTimer);
+        orderPlaying = false;
+        btn.innerHTML = '▶ Replay Demo';
+        btn.classList.remove('playing');
+      }
+    ];
+
+    var stepIndex = 0;
+    steps[0]();
+    stepIndex = 1;
+    orderTimer = setInterval(function() {
+      if (stepIndex < steps.length) {
+        steps[stepIndex]();
+        stepIndex++;
+      } else {
+        clearInterval(orderTimer);
+      }
+    }, 2000);
+  }
+
+  // ===== PAYMENT DEMO =====
+  var payPlaying = false;
+  var payTimer = null;
+
+  function togglePaymentDemo() {
+    var scenes = document.querySelectorAll('#paymentStage .anim-scene');
+    if (!scenes.length) return;
+    var current = Array.from(scenes).findIndex(function(s) { return s.classList.contains('active'); });
+    var next = (current + 1) % scenes.length;
+    scenes.forEach(function(s, i) {
+      s.classList.toggle('active', i === next);
+    });
+  }
+
+  function resetPaymentDemo() {
+    var scenes = document.querySelectorAll('#paymentStage .anim-scene');
+    scenes.forEach(function(s, i) {
+      s.classList.toggle('active', i === 0);
+    });
+  }
+
+  // ===== MODAL =====
+  function openReview() { document.getElementById('reviewModal').classList.add('open'); }
+  function closeReview() { document.getElementById('reviewModal').classList.remove('open'); }
+  document.getElementById('reviewModal').addEventListener('click', function(e) {
+    if (e.target === this) closeReview();
+  });
+
+  function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('open');
+  }
+
+  // ===== INIT =====
+  document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(function() {
+      document.querySelectorAll('.bar-fill').forEach(function(bar) {
+        var w = bar.style.width;
+        bar.style.width = '0%';
+        setTimeout(function() { bar.style.width = w; }, 100);
+      });
+    }, 300);
+  });
+
+</script>
+
+</body>
+</html>
